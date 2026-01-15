@@ -3,7 +3,7 @@
 session_start();
 require_once '../model/clsItemTreino.php';
 require_once '../model/clsTreino.php';
-require_once '../model/clsSerie.php'; // <--- Importante!
+require_once '../model/clsSerie.php'; 
 
 // 1. EXCLUIR EXERCÍCIO INTEIRO
 if (isset($_GET['acao']) && $_GET['acao'] == 'excluir') {
@@ -18,7 +18,7 @@ if (isset($_GET['acao']) && $_GET['acao'] == 'add_set') {
     $serie = new clsSerie();
     $serie->adicionarSerieExtra($_GET['id_item']);
     
-    // Atualiza contador na tabela pai (opcional, mas bom pra manter sincronia)
+    // Atualiza contador na tabela pai (para manter sincronia visual se precisar)
     $conexao = new clsConexao();
     $conexao->executaSQL("UPDATE itens_treino SET series = series + 1 WHERE id = " . $_GET['id_item']);
     
@@ -39,12 +39,12 @@ if (isset($_GET['acao']) && $_GET['acao'] == 'remove_set') {
     exit();
 }
 
-// 4. SALVAR TUDO
+// 4. SALVAR TUDO (Botão Salvar ou Adicionar Exercício)
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['acao']) && $_POST['acao'] == 'atualizar_tudo') {
     
     $id_treino = $_POST['treino_id'];
     
-    // A. Salvar Nome
+    // A. Salvar Nome da Rotina
     if (isset($_POST['nome_treino'])) {
         $treino = new clsTreino();
         $treino->atualizarNome($id_treino, $_POST['nome_treino']);
@@ -68,31 +68,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['acao']) && $_POST['aca
         }
     }
 
-    // D. Adicionar Novo Exercício
+    // D. ADICIONAR NOVO EXERCÍCIO (Correção do Erro de ID)
     if (isset($_POST['id_exercicio_add']) && !empty($_POST['id_exercicio_add'])) {
         $item = new clsItemTreino();
         $item->setTreinoId($id_treino);
         $item->setExercicioId($_POST['id_exercicio_add']);
-        $item->setSeries(3); // Visual
-        $item->setRepeticoes(0); // Não usa mais
-        $item->setCarga(0); // Não usa mais
+        $item->setSeries(3); // Apenas inicial
+        $item->setRepeticoes(10);
+        $item->setCarga(0);
         
-        // Insere o Item Pai
-        $novo_id_item = $item->inserir(); // <--- Precisa retornar o ID agora!
+        // --- AQUI ESTAVA O ERRO ---
+        // Agora pegamos o ID que o model retornou
+        $novo_id_item = $item->inserir(); 
         
-        // Insere as 3 Séries Filhas
-        // NOTA: Precisamos ajustar o método inserir() do clsItemTreino para retornar o ID.
-        // Se ele não retornar, pegamos o ultimo ID do banco.
-        $con = new clsConexao();
-        $novo_id_item = $con->ultimoID();
-        
-        $serie = new clsSerie();
-        $serie->criarSeriesIniciais($novo_id_item);
+        // Só criamos as séries se o ID for válido (> 0)
+        if ($novo_id_item > 0) {
+            $serie = new clsSerie();
+            $serie->criarSeriesIniciais($novo_id_item);
+        }
 
         header("Location: ../view/treino_detalhes.php?id_treino=" . $id_treino);
         exit();
     }
 
+    // E. Limpar Rascunho se salvou
     if (isset($_SESSION['rascunho_id']) && $_SESSION['rascunho_id'] == $id_treino) {
         unset($_SESSION['rascunho_id']);
     }

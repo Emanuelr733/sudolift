@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (in_array(strtolower($extensao), $permitidos)) {
             // Gera nome único: user_TIMESTAMP.jpg
             $nome_foto = "user_" . time() . "." . $extensao;
-            move_uploaded_file($_FILES['foto']['tmp_name'], "../images/" . $nome_foto);
+            move_uploaded_file($_FILES['foto']['tmp_name'], "../assets/images/users/" . $nome_foto);
         }
     }
 

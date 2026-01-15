@@ -1,0 +1,63 @@
+/* Arquivo: assets/css/cadastro.css */
+
+body { 
+    font-family: 'Segoe UI', sans-serif; 
+    background-color: #f0f2f5; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    height: 100vh; 
+    margin: 0; 
+}
+
+.box { 
+    background-color: white; 
+    padding: 40px; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+    width: 350px; 
+    text-align: center; 
+}
+
+h2 { 
+    color: #333; 
+    margin-bottom: 20px; 
+}
+
+input { 
+    width: 100%; 
+    padding: 12px; 
+    margin: 8px 0; 
+    border: 1px solid #ccc; 
+    border-radius: 5px; 
+    box-sizing: border-box; 
+}
+
+button { 
+    width: 100%; 
+    padding: 12px; 
+    background-color: #28a745; 
+    color: white; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    font-size: 16px; 
+    font-weight: bold; 
+    margin-top: 10px;
+}
+
+button:hover { 
+    background-color: #218838; 
+}
+
+.link { 
+    display: block; 
+    margin-top: 15px; 
+    color: #007bff; 
+    text-decoration: none; 
+    font-size: 14px; 
+}
+
+.link:hover {
+    text-decoration: underline;
+}

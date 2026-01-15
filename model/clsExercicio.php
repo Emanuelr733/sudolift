@@ -6,36 +6,24 @@ class clsExercicio
 {
     private $id;
     private $nome;
-    private $grupo_muscular;
-    private $tipo;
-    private $imagem; // <--- NOVA VARIÁVEL
+    private $grupo; // Primário
+    private $imagem;
+    private $equipamento; // Novo
+    private $grupo_secundario; // Novo
 
-    // Getters e Setters
-    public function setId($valor) { $this->id = $valor; }
-    public function getId() { return $this->id; }
-
-    public function setNome($valor) { $this->nome = $valor; }
-    public function getNome() { return $this->nome; }
-
-    public function setGrupoMuscular($valor) { $this->grupo_muscular = $valor; }
-    public function getGrupoMuscular() { return $this->grupo_muscular; }
-
-    public function setTipo($valor) { $this->tipo = $valor; }
-    public function getTipo() { return $this->tipo; }
-    
-    // --- NOVO GET E SET PARA A IMAGEM ---
-    public function setImagem($valor) { $this->imagem = $valor; }
-    public function getImagem() { return $this->imagem; }
-
-    // --- MÉTODOS CRUD ---
+    // Setters
+    public function setId($v) { $this->id = $v; }
+    public function setNome($v) { $this->nome = $v; }
+    public function setGrupo($v) { $this->grupo = $v; }
+    public function setImagem($v) { $this->imagem = $v; }
+    public function setEquipamento($v) { $this->equipamento = $v; }
+    public function setGrupoSecundario($v) { $this->grupo_secundario = $v; }
 
     public function inserir()
     {
         $conexao = new clsConexao();
-        // ATUALIZADO: Agora salvamos também a coluna 'imagem'
-        $sql = "INSERT INTO exercicios (nome, grupo_muscular, tipo, imagem) 
-                VALUES ('$this->nome', '$this->grupo_muscular', '$this->tipo', '$this->imagem')";
-        
+        $sql = "INSERT INTO exercicios (nome, grupo_muscular, imagem, equipamento, grupo_secundario) 
+                VALUES ('$this->nome', '$this->grupo', '$this->imagem', '$this->equipamento', '$this->grupo_secundario')";
         return $conexao->executaSQL($sql);
     }
 
@@ -46,11 +34,20 @@ class clsExercicio
         return $conexao->executaSQL($sql);
     }
 
-    public function excluir($id_para_deletar)
+    // Método para apagar
+    public function excluir($id)
     {
         $conexao = new clsConexao();
-        $sql = "DELETE FROM exercicios WHERE id = $id_para_deletar";
+        $sql = "DELETE FROM exercicios WHERE id = $id";
         return $conexao->executaSQL($sql);
+    }
+
+    public function buscarPorId($id)
+    {
+        $conexao = new clsConexao();
+        $sql = "SELECT * FROM exercicios WHERE id = $id";
+        $resultado = $conexao->executaSQL($sql);
+        return mysqli_fetch_assoc($resultado);
     }
 }
 ?>

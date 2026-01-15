@@ -1,0 +1,51 @@
+/* Arquivo: assets/css/exercicios.css */
+
+/* Botão + Novo Exercício */
+.btn-criar { background: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; border: none; }
+.btn-criar:hover { background: #218838; }
+
+/* Card de Detalhes (Centro) */
+.detail-card { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; max-width: 600px; width: 100%; margin-top: 20px;}
+.detail-media { width: 100%; height: 350px; object-fit: contain; background: #000; border-radius: 8px; margin-bottom: 20px; }
+.detail-title { font-size: 28px; font-weight: bold; color: #333; margin-bottom: 5px; }
+
+/* Tags (Primário / Equipamento) */
+.tags-container { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;}
+.tag { background: #eee; padding: 5px 15px; border-radius: 20px; font-size: 13px; color: #666; font-weight: bold; }
+.tag.primary { background: #e3f2fd; color: #007bff; }
+.tag.equip { background: #fff3cd; color: #856404; }
+
+/* Grid de Informações */
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; text-align: left; margin-top: 20px; background: #fafafa; padding: 20px; border-radius: 8px; }
+.info-item label { font-size: 11px; color: #999; text-transform: uppercase; font-weight: bold; display: block; }
+.info-item span { font-size: 14px; color: #333; font-weight: 500; }
+
+/* Card Vazio */
+.empty-card { text-align: center; color: #999; margin-top: 100px; }
+.empty-card i { font-size: 60px; margin-bottom: 20px; opacity: 0.3; }
+
+/* --- MODAL (JANELA DE CRIAÇÃO) --- */
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
+.modal-box { background: white; padding: 30px; border-radius: 12px; width: 500px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.modal-header h2 { margin: 0; font-size: 20px; }
+.close-modal { cursor: pointer; font-size: 24px; color: #999; }
+
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; font-size: 13px; font-weight: bold; color: #555; margin-bottom: 5px; }
+.form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+
+/* Checkbox com Scroll */
+.checkbox-scroll { height: 120px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 6px; background: #fafafa; }
+.checkbox-item { display: block; margin-bottom: 5px; font-size: 14px; }
+
+.btn-submit { width: 100%; background: #007bff; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+.btn-submit:hover { background: #0056b3; }
+
+/* --- BOTÕES DE ADMIN --- */
+.admin-actions { margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee; display: flex; justify-content: center; gap: 15px; }
+.btn-action { padding: 10px 20px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; text-decoration: none; border: none; display: flex; align-items: center; gap: 8px; }
+.btn-yellow { background-color: #ffc107; color: #333; }
+.btn-yellow:hover { background-color: #e0a800; }
+.btn-red { background-color: #dc3545; color: white; }
+.btn-red:hover { background-color: #c82333; }

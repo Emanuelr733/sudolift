@@ -4,48 +4,59 @@ require_once '../controller/clsConexao.php';
 
 class clsItemTreino
 {
+    private $id;
     private $treino_id;
     private $exercicio_id;
     private $series;
     private $repeticoes;
-    private $carga;
+    private $carga_kg;
+    private $observacao; // Novo
+    private $descanso;   // Novo
 
     // Setters
+    public function setId($v) { $this->id = $v; }
     public function setTreinoId($v) { $this->treino_id = $v; }
     public function setExercicioId($v) { $this->exercicio_id = $v; }
     public function setSeries($v) { $this->series = $v; }
     public function setRepeticoes($v) { $this->repeticoes = $v; }
-    public function setCarga($v) { $this->carga = $v; }
+    public function setCarga($v) { $this->carga_kg = $v; }
+    public function setObservacao($v) { $this->observacao = $v; }
+    public function setDescanso($v) { $this->descanso = $v; }
 
-    // --- MÉTODOS CRUD ---
-
-    // 1. ADICIONAR ITEM AO TREINO
+    // --- MÉTODO INSERIR CORRIGIDO ---
     public function inserir()
     {
         $conexao = new clsConexao();
-        $sql = "INSERT INTO itens_treino (treino_id, exercicio_id, series, repeticoes, carga_kg) 
-                VALUES ('$this->treino_id', '$this->exercicio_id', '$this->series', '$this->repeticoes', '$this->carga')";
-        return $conexao->executaSQL($sql);
+        
+        $sql = "INSERT INTO itens_treino (treino_id, exercicio_id, series, repeticoes, carga_kg, observacao, descanso) 
+                VALUES ('$this->treino_id', '$this->exercicio_id', '$this->series', '$this->repeticoes', '$this->carga_kg', '', '00:00')";
+        
+        $conexao->executaSQL($sql);
+
+        // --- CORREÇÃO: Pega o ID que acabou de ser gerado ---
+        // (Usamos MAX(id) para garantir compatibilidade sem mexer na clsConexao)
+        $sql_id = "SELECT MAX(id) as id FROM itens_treino";
+        $resultado = $conexao->executaSQL($sql_id);
+        $dados = mysqli_fetch_assoc($resultado);
+        
+        return $dados['id']; // Retorna o ID real (ex: 55)
     }
 
-    // 2. LISTAR ITENS DESTE TREINO (Com JOIN para pegar o nome do exercício)
     public function listarDoTreino($id_treino)
     {
         $conexao = new clsConexao();
-        // Aqui usamos um JOIN para trazer o nome do exercício junto com a carga
-        $sql = "SELECT i.*, e.nome as nome_exercicio, e.grupo_muscular 
-                FROM itens_treino i
-                INNER JOIN exercicios e ON i.exercicio_id = e.id
-                WHERE i.treino_id = $id_treino
-                ORDER BY i.id DESC";
+        // JOIN para trazer o nome do exercício e grupo muscular junto
+        $sql = "SELECT it.*, ex.nome as nome_exercicio, ex.grupo_muscular, ex.imagem 
+                FROM itens_treino it 
+                INNER JOIN exercicios ex ON it.exercicio_id = ex.id 
+                WHERE it.treino_id = $id_treino";
         return $conexao->executaSQL($sql);
     }
 
-    // 3. REMOVER ITEM (Caso errou a carga)
-    public function excluir($id_item)
+    public function excluir($id)
     {
         $conexao = new clsConexao();
-        $sql = "DELETE FROM itens_treino WHERE id = $id_item";
+        $sql = "DELETE FROM itens_treino WHERE id = $id";
         return $conexao->executaSQL($sql);
     }
 }
