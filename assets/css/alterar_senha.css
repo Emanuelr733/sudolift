@@ -1,16 +1,13 @@
-/* Arquivo: assets/css/alterar_senha.css */
-
 body { 
-    font-family: 'Segoe UI', Arial, sans-serif; /* Atualizado para padrão do sistema */
+    font-family: 'Segoe UI', Arial, sans-serif;
     background-color: #f4f4f4; 
     padding: 20px; 
-    display: flex;             /* Centraliza verticalmente se quiser */
-    justify-content: center;   /* Centraliza horizontalmente */
-    align-items: center;       /* Centraliza verticalmente */
-    min-height: 100vh;         /* Garante altura total */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
     margin: 0;
 }
-
 .box { 
     width: 100%;
     max-width: 400px; 
@@ -19,13 +16,11 @@ body {
     border-radius: 8px; 
     box-shadow: 0 0 10px rgba(0,0,0,0.1); 
 }
-
 h2 { 
     text-align: center; 
     color: #333;
     margin-top: 0;
 }
-
 input { 
     width: 100%; 
     padding: 10px; 
@@ -34,7 +29,6 @@ input {
     border-radius: 4px; 
     box-sizing: border-box; 
 }
-
 button { 
     width: 100%; 
     padding: 12px; 
@@ -46,7 +40,6 @@ button {
     font-size: 16px;
     font-weight: bold;
 }
-
 button:hover { 
     background-color: #0056b3; 
 }

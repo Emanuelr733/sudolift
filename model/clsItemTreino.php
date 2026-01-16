@@ -1,7 +1,5 @@
 <?php
-// Arquivo: model/clsItemTreino.php
 require_once '../controller/clsConexao.php';
-
 class clsItemTreino
 {
     private $id;
@@ -10,10 +8,8 @@ class clsItemTreino
     private $series;
     private $repeticoes;
     private $carga_kg;
-    private $observacao; // Novo
-    private $descanso;   // Novo
-
-    // Setters
+    private $observacao;
+    private $descanso;
     public function setId($v) { $this->id = $v; }
     public function setTreinoId($v) { $this->treino_id = $v; }
     public function setExercicioId($v) { $this->exercicio_id = $v; }
@@ -22,37 +18,26 @@ class clsItemTreino
     public function setCarga($v) { $this->carga_kg = $v; }
     public function setObservacao($v) { $this->observacao = $v; }
     public function setDescanso($v) { $this->descanso = $v; }
-
-    // --- MÉTODO INSERIR CORRIGIDO ---
     public function inserir()
     {
         $conexao = new clsConexao();
-        
         $sql = "INSERT INTO itens_treino (treino_id, exercicio_id, series, repeticoes, carga_kg, observacao, descanso) 
                 VALUES ('$this->treino_id', '$this->exercicio_id', '$this->series', '$this->repeticoes', '$this->carga_kg', '', '00:00')";
-        
         $conexao->executaSQL($sql);
-
-        // --- CORREÇÃO: Pega o ID que acabou de ser gerado ---
-        // (Usamos MAX(id) para garantir compatibilidade sem mexer na clsConexao)
         $sql_id = "SELECT MAX(id) as id FROM itens_treino";
         $resultado = $conexao->executaSQL($sql_id);
         $dados = mysqli_fetch_assoc($resultado);
-        
-        return $dados['id']; // Retorna o ID real (ex: 55)
+        return $dados['id'];
     }
-
     public function listarDoTreino($id_treino)
     {
         $conexao = new clsConexao();
-        // JOIN para trazer o nome do exercício e grupo muscular junto
         $sql = "SELECT it.*, ex.nome as nome_exercicio, ex.grupo_muscular, ex.imagem 
                 FROM itens_treino it 
                 INNER JOIN exercicios ex ON it.exercicio_id = ex.id 
                 WHERE it.treino_id = $id_treino";
         return $conexao->executaSQL($sql);
     }
-
     public function excluir($id)
     {
         $conexao = new clsConexao();

@@ -35,7 +35,7 @@ $listaRotinas = $objTreino->listarMeusTreinos($id_usuario);
                 <i class="fas fa-dumbbell"></i> Rotinas
             </a>
             <a href="exercicios.php" class="menu-item">
-                <i class="fas fa-dumbbell"></i> Exercícios
+                <i class="fas fa-running"></i> Exercícios
             </a>
         </nav>
         <a href="../controller/logout.php" class="menu-item sair-btn"><i class="fas fa-sign-out-alt"></i> Sair</a>

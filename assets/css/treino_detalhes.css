@@ -1,33 +1,20 @@
-/* Input gigante do Nome da Rotina */
 .rotina-nome-input { width: 100%; padding: 10px 30px; font-size: 24px; font-weight: bold; color: #333; border: none; background-color: transparent; outline: none; border-bottom: 2px solid transparent; transition: 0.3s; box-sizing: border-box; }
 .rotina-nome-input:focus { border-bottom: 2px solid #007bff; background-color: rgba(255,255,255,0.5); }
 .rotina-nome-input::placeholder { color: #ccc; }
-
-/* Card do Exercício */
 .item-card { background: white; border-radius: 8px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: stretch; gap: 15px; }
 .card-header { display: flex; justify-content: space-between; align-items: center; }
 .header-left { display: flex; align-items: center; gap: 10px; }
 .card-img { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; background: #eee; }
-
-/* Botão de Deletar Exercício */
 .btn-delete { color: #e74c3c; cursor: pointer; padding: 8px; margin-left: 10px; text-decoration: none;}
-
-/* Área de Notas e Tempo */
 .card-notes { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
 .input-label { font-size: 11px; font-weight: bold; color: #555; margin-bottom: 3px; display: block; text-transform: uppercase; }
 .note-input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; font-size: 13px; resize: vertical; box-sizing: border-box; }
 .time-input { width: 100px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; text-align: center; font-weight: bold; letter-spacing: 1px; }
-
-/* Tabela de Séries */
 .set-table { width: 100%; border-collapse: collapse; margin-top: 5px; }
 .set-table th { font-size: 11px; color: #999; text-align: center; padding-bottom: 5px; }
 .set-table td { padding: 5px; text-align: center; }
 .set-number { background: #eee; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; color: #555; }
-
-/* Inputs pequenos da tabela */
 .input-mini { width: 60px; padding: 6px; border: 1px solid #ddd; border-radius: 4px; text-align: center; font-weight: bold; }
-
-/* Botões da Tabela (Adicionar Série / Remover Série) */
 .btn-add-set { width: 100%; padding: 8px; background: #e3f2fd; color: #007bff; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 5px; font-size: 13px; }
 .btn-add-set:hover { background: #bbdefb; }
 .btn-remove-row { color: #ccc; text-decoration: none; font-weight: bold; font-size: 14px; cursor: pointer; padding: 5px; }

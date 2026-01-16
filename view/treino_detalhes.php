@@ -21,6 +21,12 @@ while($row = mysqli_fetch_assoc($meusItens)) {
     $totalSeries += $row['series'];
     $arrayItens[] = $row;
 }
+$listaMusculos = [
+    "Abdominais", "Abdutores", "Adutores", "Antebraço", "Bíceps", "Corpo inteiro", 
+    "Costas Superiores", "Dorsais", "Glúteos", "Isquiossurais", "Lombar", 
+    "Ombros", "Panturrilhas", "Peito", "Quadríceps", "Trapézio", "Tríceps", "Outro"
+];
+$listaEquipamentos = ["Nenhum", "Barra", "Anilha", "Haltere", "Máquina", "Outro"];
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -44,7 +50,7 @@ while($row = mysqli_fetch_assoc($meusItens)) {
         <nav>
             <a href="dashboard.php" class="menu-item"><i class="fas fa-home"></i> Início</a>
             <a href="rotinas.php" class="menu-item ativo"><i class="fas fa-dumbbell"></i> Rotinas</a>
-            <a href="exercicios.php" class="menu-item"><i class="fas fa-dumbbell"></i> Exercícios</a>
+            <a href="exercicios.php" class="menu-item"><i class="fas fa-running"></i> Exercícios</a>
         </nav>
         <a href="../controller/logout.php" class="menu-item sair-btn"><i class="fas fa-sign-out-alt"></i> Sair</a>
     </div>
@@ -179,16 +185,33 @@ while($row = mysqli_fetch_assoc($meusItens)) {
                 <div class="stat-value"><?php echo $totalSeries; ?></div>
             </div>
         </div>
+        <div class="library-title">ADICIONAR EXERCÍCIO</div>
+        <div class="library-filters">
+            <input type="text" id="buscaExercicio" class="lib-search" placeholder="Buscar..." onkeyup="filtrarBiblioteca()">
+            <div class="filter-row">
+                <select id="filtroMusculo" class="lib-select" onchange="filtrarBiblioteca()">
+                    <option value="">Todos Músculos</option>
+                    <?php foreach($listaMusculos as $m): echo "<option value='$m'>$m</option>"; endforeach; ?>
+                </select>
+                <select id="filtroEquip" class="lib-select" onchange="filtrarBiblioteca()">
+                    <option value="">Todos Equip.</option>
+                    <?php foreach($listaEquipamentos as $e): echo "<option value='$e'>$e</option>"; endforeach; ?>
+                </select>
+            </div>
+        </div>
         <div class="library-list">
-            <div style="padding:15px; color:#888; font-size:12px; font-weight:bold;">BIBLIOTECA DE EXERCÍCIOS</div>
-            <?php while($ex = mysqli_fetch_assoc($todosExercicios)): ?>
-                <?php 
-                    $img = "https://via.placeholder.com/50";
-                    if (!empty($ex['imagem']) && file_exists("../assets/images/exercises/" . $ex['imagem'])) {
-                        $img = "../assets/images/exercises/" . $ex['imagem'];
-                    }
-                ?>
-                <div class="lib-item">
+            <?php
+            mysqli_data_seek($todosExercicios, 0);
+            while($ex = mysqli_fetch_assoc($todosExercicios)): 
+                $img = "https://via.placeholder.com/50";
+                if (!empty($ex['imagem']) && file_exists("../assets/images/exercises/" . $ex['imagem'])) {
+                    $img = "../assets/images/exercises/" . $ex['imagem'];
+                }
+            ?>
+                <div class="lib-item"
+                     data-nome="<?php echo strtolower($ex['nome']); ?>"
+                     data-musculo="<?php echo $ex['grupo_muscular']; ?>"
+                     data-equip="<?php echo $ex['equipamento']; ?>">
                     <?php if(strpos($img, '.mp4') !== false): ?>
                         <video src="<?php echo $img; ?>" class="lib-img"></video>
                     <?php else: ?>
@@ -205,19 +228,6 @@ while($row = mysqli_fetch_assoc($meusItens)) {
             <?php endwhile; ?>
         </div>
     </div>
-    <script>
-    function adicionarExercicio(id) {
-        document.getElementById('id_exercicio_add').value = id;
-        document.getElementById('formTreino').submit();
-    }
-    function mascaraTempo(input) {
-        var valor = input.value.replace(/\D/g, "");
-        if (valor.length > 4) valor = valor.slice(0, 4);
-        if (valor.length > 2) {
-            valor = valor.slice(0, 2) + ":" + valor.slice(2);
-        }
-        input.value = valor;
-    }
-    </script>
+    <script src="../assets/js/treino_detalhes.js"></script>
 </body>
 </html>

@@ -13,7 +13,6 @@ $foto = isset($_SESSION['foto_usuario']) && !empty($_SESSION['foto_usuario']) ? 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/dashboard.css">
-
 </head>
 <body>
     <div class="sidebar">
@@ -34,7 +33,7 @@ $foto = isset($_SESSION['foto_usuario']) && !empty($_SESSION['foto_usuario']) ? 
                 <i class="fas fa-dumbbell"></i> Rotinas
             </a>
             <a href="exercicios.php" class="menu-item">
-                <i class="fas fa-dumbbell"></i> Exercícios
+                <i class="fas fa-running"></i> Exercícios
             </a>
             </nav>
         <a href="../controller/logout.php" class="menu-item sair-btn">
