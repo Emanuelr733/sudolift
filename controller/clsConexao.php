@@ -37,5 +37,8 @@ class clsConexao
     public function ultimoID(){
         return mysqli_insert_id($this->conexao);
     }
+    public function getConexao() {
+        return $this->conexao;
+    }
 }
 ?>

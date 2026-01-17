@@ -22,9 +22,39 @@ while($row = mysqli_fetch_assoc($meusItens)) {
     $arrayItens[] = $row;
 }
 $listaMusculos = [
-    "Abdominais", "Abdutores", "Adutores", "Antebraço", "Bíceps", "Corpo inteiro", 
-    "Costas Superiores", "Dorsais", "Glúteos", "Isquiossurais", "Lombar", 
-    "Ombros", "Panturrilhas", "Peito", "Quadríceps", "Trapézio", "Tríceps", "Outro"
+    // Peito
+    'Peitoral Superior',
+    'Peitoral Médio',
+    'Peitoral Inferior',
+
+    // Ombros
+    'Deltoide Anterior',
+    'Deltoide Lateral',
+    'Deltoide Posterior',
+
+    // Costas
+    'Dorsais',
+    'Costas Superiores',
+    'Trapézio',
+    'Lombar',
+
+    // Braços
+    'Bíceps',
+    'Tríceps',
+    'Antebraço',
+
+    // Core
+    'Abdômen Superior',
+    'Abdômen Inferior',
+    'Oblíquos',
+
+    // Pernas
+    'Quadríceps',
+    'Posterior de Coxa',
+    'Glúteo',
+    'Adutores',
+    'Abdutores',
+    'Panturrilha'
 ];
 $listaEquipamentos = ["Nenhum", "Barra", "Anilha", "Haltere", "Máquina", "Outro"];
 ?>
@@ -38,22 +68,6 @@ $listaEquipamentos = ["Nenhum", "Barra", "Anilha", "Haltere", "Máquina", "Outro
     <link rel="stylesheet" href="../assets/css/treino_detalhes.css">
 </head>
 <body>
-    <div class="sidebar">
-        <div class="perfil-area">
-            <?php 
-            $caminhoFoto = "../assets/images/users/" . $foto_user;
-            if (!file_exists($caminhoFoto)) { $caminhoFoto = "https://via.placeholder.com/80"; }
-            ?>
-            <img src="<?php echo $caminhoFoto; ?>" class="perfil-foto">
-            <h3 class="perfil-nome"><?php echo $_SESSION['nome_usuario']; ?></h3>
-        </div>
-        <nav>
-            <a href="dashboard.php" class="menu-item"><i class="fas fa-home"></i> Início</a>
-            <a href="rotinas.php" class="menu-item ativo"><i class="fas fa-dumbbell"></i> Rotinas</a>
-            <a href="exercicios.php" class="menu-item"><i class="fas fa-running"></i> Exercícios</a>
-        </nav>
-        <a href="../controller/logout.php" class="menu-item sair-btn"><i class="fas fa-sign-out-alt"></i> Sair</a>
-    </div>
     <div class="center-panel">
         <div class="center-header">
             <?php
@@ -187,17 +201,22 @@ $listaEquipamentos = ["Nenhum", "Barra", "Anilha", "Haltere", "Máquina", "Outro
         </div>
         <div class="library-title">ADICIONAR EXERCÍCIO</div>
         <div class="library-filters">
-            <input type="text" id="buscaExercicio" class="lib-search" placeholder="Buscar..." onkeyup="filtrarBiblioteca()">
             <div class="filter-row">
                 <select id="filtroMusculo" class="lib-select" onchange="filtrarBiblioteca()">
                     <option value="">Todos Músculos</option>
-                    <?php foreach($listaMusculos as $m): echo "<option value='$m'>$m</option>"; endforeach; ?>
+                    <?php foreach($listaMusculos as $m): ?>
+                        <option value="<?php echo strtolower($m); ?>"><?php echo $m; ?></option>
+                    <?php endforeach; ?>
                 </select>
+                    
                 <select id="filtroEquip" class="lib-select" onchange="filtrarBiblioteca()">
-                    <option value="">Todos Equip.</option>
-                    <?php foreach($listaEquipamentos as $e): echo "<option value='$e'>$e</option>"; endforeach; ?>
+                    <option value="">Equipamento</option>
+                    <?php foreach($listaEquipamentos as $e): ?>
+                        <option value="<?php echo $e; ?>"><?php echo $e; ?></option>
+                    <?php endforeach; ?>
                 </select>
             </div>
+            <input type="text" id="buscaExercicio" class="lib-search" placeholder="Buscar exercício..." onkeyup="filtrarBiblioteca()">
         </div>
         <div class="library-list">
             <?php
@@ -228,6 +247,50 @@ $listaEquipamentos = ["Nenhum", "Barra", "Anilha", "Haltere", "Máquina", "Outro
             <?php endwhile; ?>
         </div>
     </div>
-    <script src="../assets/js/treino_detalhes.js"></script>
+    <script>
+        function adicionarExercicio(id) {
+            document.getElementById('id_exercicio_add').value = id;
+            document.getElementById('formTreino').submit();
+        }
+        function mascaraTempo(input) {
+            var valor = input.value.replace(/\D/g, "");
+            if (valor.length > 4) valor = valor.slice(0, 4);
+            if (valor.length > 2) {
+                valor = valor.slice(0, 2) + ":" + valor.slice(2);
+            }
+            input.value = valor;
+        }
+        function filtrarBiblioteca() {
+    // Pega os valores dos filtros (tudo em minúsculo)
+    var texto = document.getElementById('buscaExercicio').value.toLowerCase();
+    var musculo = document.getElementById('filtroMusculo').value.toLowerCase();
+    var equip = document.getElementById('filtroEquip').value;
+
+    var itens = document.getElementsByClassName('lib-item');
+
+    for (var i = 0; i < itens.length; i++) {
+        var item = itens[i];
+        
+        // Pega os atributos do HTML e converte para minúsculo para garantir a comparação
+        var nomeItem = (item.getAttribute('data-nome') || '').toLowerCase();
+        var musculoItem = (item.getAttribute('data-musculo') || '').toLowerCase();
+        var equipItem = item.getAttribute('data-equip'); // Equipamento geralmente é padrão, não precisa lower
+
+        var mostrar = true;
+
+        // 1. Filtro Texto (Nome)
+        if (texto !== "" && !nomeItem.includes(texto)) mostrar = false;
+        
+        // 2. Filtro Músculo (Verifica se 'peitoral' está dentro de 'peitoral, tríceps')
+        if (musculo !== "" && !musculoItem.includes(musculo)) mostrar = false;
+        
+        // 3. Filtro Equipamento
+        if (equip !== "" && equipItem !== equip) mostrar = false;
+
+        // Aplica o display flex se passar nos filtros
+        item.style.display = mostrar ? "flex" : "none";
+    }
+}
+    </script>
 </body>
 </html>

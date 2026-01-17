@@ -1,18 +1,211 @@
-.main-content { flex: 1; padding: 30px; overflow-y: auto; }
-.header-rotinas { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-.btn-nova { background-color: #007bff; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 5px rgba(0,123,255,0.3); cursor: pointer; border: none; font-size: 14px;}
-.btn-nova:hover { background-color: #0056b3; }
-.grid-rotinas { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-.card-rotina { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); position: relative; transition: transform 0.2s; border: 1px solid transparent; }
-.card-rotina:hover { transform: translateY(-3px); border-color: #007bff; }
-.rotina-titulo { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 5px; }
-.rotina-data { font-size: 12px; color: #999; margin-bottom: 15px; }
-.rotina-resumo { font-size: 14px; color: #666; margin-bottom: 20px; min-height: 40px; }
-.menu-dots { position: absolute; top: 15px; right: 15px; cursor: pointer; color: #999; padding: 10px; z-index: 5; }
+/* Container Principal - CORRIGIDO */
+.main-content {
+    width: calc(100% - 250px); 
+
+    padding: 30px 40px;
+    background-color: #f4f6f9;
+    min-height: 100vh;
+    box-sizing: border-box; /* Garante que o padding não estoure a largura */
+}
+
+/* Garante que o cabeçalho ocupe 100% dessa nova largura */
+.header-rotinas {
+    display: flex;
+    justify-content: space-between; /* Título na esquerda, Botão na direita */
+    align-items: center;
+    margin-bottom: 30px;
+    width: 100%; /* Força largura total */
+}
+
+.header-rotinas h1 {
+    font-size: 28px;
+    color: #333;
+    margin: 0;
+}
+
+/* Botão Nova Rotina */
+.btn-nova {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+    box-shadow: 0 4px 6px rgba(40, 167, 69, 0.2);
+}
+
+.btn-nova:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 10px rgba(40, 167, 69, 0.3);
+}
+
+/* Grid Layout */
+.grid-rotinas {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+/* Card da Rotina */
+.card-rotina {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    border: 1px solid #eee;
+}
+
+.card-rotina:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* Ícone Decorativo no Topo do Card */
+.card-header-visual {
+    height: 80px;
+    background: linear-gradient(135deg, #76c7c0 0%, #4db6ac 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.3);
+    font-size: 40px;
+}
+
+.card-body {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Título e Menu */
+.rotina-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.rotina-titulo {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+    line-height: 1.3;
+}
+
+/* Menu 3 Pontinhos */
+.menu-container {
+    position: relative;
+}
+
+.menu-dots {
+    color: #999;
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.2s;
+}
 .menu-dots:hover { color: #333; }
-.dropdown-content { display: none; position: absolute; right: 10px; top: 40px; background-color: white; min-width: 140px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-radius: 6px; z-index: 10; overflow: hidden; border: 1px solid #eee; }
-.dropdown-content a { color: black; padding: 12px 16px; text-decoration: none; display: block; font-size: 14px; }
-.dropdown-content a:hover { background-color: #f1f1f1; }
+
+/* Dropdown */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 25px;
+    background-color: white;
+    min-width: 140px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.15);
+    border-radius: 6px;
+    z-index: 10;
+    border: 1px solid #eee;
+    overflow: hidden;
+}
+
+.dropdown-content.show { display: block; }
+
+.dropdown-content a {
+    color: #333;
+    padding: 10px 15px;
+    text-decoration: none;
+    display: block;
+    font-size: 13px;
+    transition: background 0.1s;
+}
+
+.dropdown-content a:hover { background-color: #f8f9fa; }
 .dropdown-content a.delete { color: #dc3545; }
-.btn-abrir { display: block; text-align: center; background: #f8f9fa; color: #333; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: 500; font-size: 14px; }
-.btn-abrir:hover { background: #e2e6ea; }
+.dropdown-content a.delete:hover { background-color: #fff5f5; }
+
+/* Informações (Data e Qtd) */
+.rotina-info {
+    display: flex;
+    gap: 15px;
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 15px;
+}
+.rotina-info i { margin-right: 4px; }
+
+/* Tags de Músculos */
+.tags-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 20px;
+    flex: 1; /* Empurra o botão para baixo */
+}
+
+.mini-tag {
+    background: #e0f2f1;
+    color: #00796b;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Botão Abrir */
+.btn-abrir {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-abrir:hover {
+    background-color: #555;
+}
+
+/* Estado Vazio */
+.empty-state {
+    grid-column: 1 / -1; /* Ocupa toda a largura */
+    text-align: center;
+    padding: 50px;
+    background: white;
+    border-radius: 12px;
+    border: 1px dashed #ccc;
+}
+.empty-icon { font-size: 50px; color: #ddd; margin-bottom: 15px; }
+.empty-state h3 { margin: 0 0 10px; color: #555; }
+.empty-state p { color: #888; margin: 0; }
