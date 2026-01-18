@@ -1,0 +1,120 @@
+.rotina-nome-input { width: 100%; padding: 10px 30px; font-size: 24px; font-weight: bold; color: #333; border: none; background-color: transparent; outline: none; border-bottom: 2px solid transparent; transition: 0.3s; box-sizing: border-box; }
+.rotina-nome-input:focus { border-bottom: 2px solid #007bff; background-color: rgba(255,255,255,0.5); }
+.rotina-nome-input::placeholder { color: #ccc; }
+.item-card { background: white; border-radius: 8px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: stretch; gap: 15px; }
+.card-header { display: flex; justify-content: space-between; align-items: center; }
+.header-left { display: flex; align-items: center; gap: 10px; }
+.card-img { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; background: #eee; }
+.btn-delete { color: #e74c3c; cursor: pointer; padding: 8px; margin-left: 10px; text-decoration: none;}
+.card-notes { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
+.input-label { font-size: 11px; font-weight: bold; color: #555; margin-bottom: 3px; display: block; text-transform: uppercase; }
+.note-input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; font-size: 13px; resize: vertical; box-sizing: border-box; }
+.time-input { width: 100px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; text-align: center; font-weight: bold; letter-spacing: 1px; }
+.set-table { width: 100%; border-collapse: collapse; margin-top: 5px; }
+.set-table th { font-size: 11px; color: #999; text-align: center; padding-bottom: 5px; }
+.set-table td { padding: 5px; text-align: center; }
+.set-number { background: #eee; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; color: #555; }
+.input-mini { width: 60px; padding: 6px; border: 1px solid #ddd; border-radius: 4px; text-align: center; font-weight: bold; }
+.btn-add-set { width: 100%; padding: 8px; background: #e3f2fd; color: #007bff; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 5px; font-size: 13px; }
+.btn-add-set:hover { background: #bbdefb; }
+.btn-remove-row { color: #ccc; text-decoration: none; font-weight: bold; font-size: 14px; cursor: pointer; padding: 5px; }
+.btn-remove-row:hover { color: #e74c3c; }
+/* =========================================
+   ESTILOS DA BIBLIOTECA LATERAL
+   (Copiados para manter a página independente)
+   ========================================= */
+
+/* --- FILTROS --- */
+.library-filters {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.filter-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.lib-select {
+    flex: 1;
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 13px;
+    color: #444;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    outline: none;
+    cursor: pointer;
+}
+
+.lib-search {
+    width: 100%;
+    padding: 9px 12px;
+    font-size: 13px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    background-color: #fff;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.lib-select:focus, .lib-search:focus {
+    border-color: #76c7c0;
+}
+
+/* --- LISTA DE EXERCÍCIOS --- */
+.library-list {
+    flex: 1;
+    overflow-y: auto;
+    background-color: #fff;
+}
+
+.lib-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background 0.2s;
+}
+
+.lib-item:hover {
+    background-color: #f9f9f9;
+}
+
+/* Imagem Miniatura */
+.lib-img {
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-right: 12px;
+    background-color: #eee;
+    border: 1px solid #e0e0e0;
+}
+
+/* Textos */
+.lib-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.lib-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.lib-group {
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+}

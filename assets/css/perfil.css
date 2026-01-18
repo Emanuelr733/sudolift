@@ -1,0 +1,149 @@
+/* Layout Principal */
+.main-content {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f4f6f9;
+}
+
+/* O Cartão do Perfil */
+.profile-card {
+    background: white;
+    width: 100%;
+    max-width: 600px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    position: relative;
+}
+
+/* Fundo Colorido do Topo */
+.card-header-bg {
+    height: 120px;
+    background: linear-gradient(135deg, #76c7c0 0%, #4db6ac 100%);
+}
+
+/* Formulário */
+.profile-form {
+    padding: 0 40px 40px 40px;
+    margin-top: -60px; /* Faz a foto subir para cima do fundo */
+    position: relative;
+}
+
+/* Área da Foto (Círculo grande) */
+.photo-upload-section {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.photo-wrapper {
+    position: relative;
+    width: 120px;
+    height: 120px;
+}
+
+#preview-foto {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 5px solid white; /* Borda branca grossa */
+    object-fit: cover;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    background: #fff;
+}
+
+/* Botãozinho da Câmera */
+.btn-edit-photo {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: #333;
+    color: white;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px solid white;
+    transition: background 0.2s;
+}
+
+.btn-edit-photo:hover {
+    background: #555;
+}
+
+/* Esconde o input file feio */
+#input-foto {
+    display: none;
+}
+
+/* Inputs */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-wrapper i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #aaa;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding: 12px 15px 12px 40px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+}
+
+.input-wrapper input:focus {
+    border-color: #76c7c0;
+    box-shadow: 0 0 0 3px rgba(118, 199, 192, 0.1);
+}
+
+.input-wrapper input:focus + i {
+    color: #76c7c0;
+}
+
+/* Botão Salvar */
+.btn-save {
+    width: 100%;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    transition: background 0.2s;
+}
+
+.btn-save:hover {
+    background-color: #218838;
+}
