@@ -75,7 +75,6 @@ $listaRotinas = $objTreino->listarMeusTreinos($id_usuario);
                 </button>
             </form>
         </div>
-
         <div class="grid-rotinas">
             <?php
             if (mysqli_num_rows($listaRotinas) > 0) {
@@ -162,7 +161,6 @@ $listaRotinas = $objTreino->listarMeusTreinos($id_usuario);
             ?>
         </div>
     </div>
-
     <script>
         function toggleMenu(idMenu) {
             var menu = document.getElementById(idMenu);
@@ -189,5 +187,4 @@ $listaRotinas = $objTreino->listarMeusTreinos($id_usuario);
         }
     </script>
 </body>
-
 </html>

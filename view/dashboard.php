@@ -111,14 +111,6 @@ $totalTreinos = mysqli_num_rows($todosTreinosResult);
                 <span class="quote-author">- Carregando...</span>
             </div>
         </div>
-
-        <!-- GIF Card (Full Width) -->
-        <div class="content-card iframe-card">
-            <iframe
-                src="https://tenor.com/embed/3702210595977902030"
-                frameborder="0">
-            </iframe>
-        </div>
     </div>
 
     </div>

@@ -3,31 +3,33 @@ require_once '../controller/clsConexao.php';
 
 class clsAdmin
 {
-    // Retorna um array com os totais para os cards
-    public function getEstatisticas()
+    private $conexao;
+
+    // 1. Conecta apenas uma vez ao instanciar a classe
+    public function __construct()
     {
-        $conexao = new clsConexao();
-        
-        // Conta Usuários
-        $sqlUsers = "SELECT count(*) as total FROM usuarios";
-        $resUsers = mysqli_fetch_assoc($conexao->executaSQL($sqlUsers));
-        
-        // Conta Exercícios
-        $sqlExer = "SELECT count(*) as total FROM exercicios";
-        $resExer = mysqli_fetch_assoc($conexao->executaSQL($sqlExer));
-        
-        return [
-            'total_usuarios' => $resUsers['total'],
-            'total_exercicios' => $resExer['total']
-        ];
+        $this->conexao = new clsConexao();
     }
 
-    // Retorna a lista completa de usuários
+    public function getEstatisticas()
+    {
+        // 2. Busca estatísticas gerais do sistema
+        $sql = "SELECT 
+                    (SELECT COUNT(*) FROM usuarios) as total_usuarios,
+                    (SELECT COUNT(*) FROM exercicios) as total_exercicios";
+        
+        $result = $this->conexao->executaSQL($sql);
+        return mysqli_fetch_assoc($result);
+    }
+
     public function listarUsuarios()
     {
-        $conexao = new clsConexao();
-        $sql = "SELECT * FROM usuarios ORDER BY id DESC";
-        return $conexao->executaSQL($sql);
+        // 3. Busca lista de usuários cadastrados evitando a senha
+        $sql = "SELECT id, nome, email, perfil, data_cadastro, foto_perfil
+                FROM usuarios 
+                ORDER BY id DESC";
+                
+        return $this->conexao->executaSQL($sql);
     }
 }
 ?>

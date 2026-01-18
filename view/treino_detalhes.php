@@ -21,41 +21,7 @@ while($row = mysqli_fetch_assoc($meusItens)) {
     $totalSeries += $row['series'];
     $arrayItens[] = $row;
 }
-$listaMusculos = [
-    // Peito
-    'Peitoral Superior',
-    'Peitoral Médio',
-    'Peitoral Inferior',
-
-    // Ombros
-    'Deltoide Anterior',
-    'Deltoide Lateral',
-    'Deltoide Posterior',
-
-    // Costas
-    'Dorsais',
-    'Costas Superiores',
-    'Trapézio',
-    'Lombar',
-
-    // Braços
-    'Bíceps',
-    'Tríceps',
-    'Antebraço',
-
-    // Core
-    'Abdômen Superior',
-    'Abdômen Inferior',
-    'Oblíquos',
-
-    // Pernas
-    'Quadríceps',
-    'Posterior de Coxa',
-    'Glúteo',
-    'Adutores',
-    'Abdutores',
-    'Panturrilha'
-];
+$listaMusculos = ['Peitoral Superior', 'Peitoral Médio', 'Peitoral Inferior', 'Deltoide Anterior', 'Deltoide Lateral', 'Deltoide Posterior', 'Dorsais', 'Costas Superiores', 'Trapézio', 'Lombar', 'Bíceps', 'Tríceps', 'Antebraço', 'Abdômen Superior', 'Abdômen Inferior', 'Oblíquos', 'Quadríceps', 'Posterior de Coxa', 'Glúteo', 'Adutores', 'Abdutores', 'Panturrilha'];
 $listaEquipamentos = ["Nenhum", "Barra", "Anilha", "Haltere", "Máquina", "Outro"];
 ?>
 <!DOCTYPE html>
@@ -261,33 +227,19 @@ $listaEquipamentos = ["Nenhum", "Barra", "Anilha", "Haltere", "Máquina", "Outro
             input.value = valor;
         }
         function filtrarBiblioteca() {
-    // Pega os valores dos filtros (tudo em minúsculo)
     var texto = document.getElementById('buscaExercicio').value.toLowerCase();
     var musculo = document.getElementById('filtroMusculo').value.toLowerCase();
     var equip = document.getElementById('filtroEquip').value;
-
     var itens = document.getElementsByClassName('lib-item');
-
     for (var i = 0; i < itens.length; i++) {
         var item = itens[i];
-        
-        // Pega os atributos do HTML e converte para minúsculo para garantir a comparação
         var nomeItem = (item.getAttribute('data-nome') || '').toLowerCase();
         var musculoItem = (item.getAttribute('data-musculo') || '').toLowerCase();
-        var equipItem = item.getAttribute('data-equip'); // Equipamento geralmente é padrão, não precisa lower
-
+        var equipItem = item.getAttribute('data-equip');
         var mostrar = true;
-
-        // 1. Filtro Texto (Nome)
         if (texto !== "" && !nomeItem.includes(texto)) mostrar = false;
-        
-        // 2. Filtro Músculo (Verifica se 'peitoral' está dentro de 'peitoral, tríceps')
         if (musculo !== "" && !musculoItem.includes(musculo)) mostrar = false;
-        
-        // 3. Filtro Equipamento
         if (equip !== "" && equipItem !== equip) mostrar = false;
-
-        // Aplica o display flex se passar nos filtros
         item.style.display = mostrar ? "flex" : "none";
     }
 }

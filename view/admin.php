@@ -2,8 +2,6 @@
 session_start();
 require_once '../model/clsAdmin.php';
 
-// --- SEGURANÇA MÁXIMA ---
-// Se não estiver logado OU não for admin, expulsa.
 if (!isset($_SESSION['id_usuario']) || $_SESSION['perfil_usuario'] != 'admin') {
     header('Location: dashboard.php');
     exit();
@@ -22,6 +20,10 @@ $listaUsuarios = $objAdmin->listarUsuarios();
 
 // Foto do usuário logado (para a sidebar)
 $foto_user = isset($_SESSION['foto_usuario']) ? $_SESSION['foto_usuario'] : 'padrao.png';
+
+// Verifica se existe mensagem de feedback na URL (ex: admin.php?msg=Sucesso)
+$mensagem = isset($_GET['msg']) ? $_GET['msg'] : '';
+$erro     = isset($_GET['erro']) ? $_GET['erro'] : '';
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -38,7 +40,6 @@ $foto_user = isset($_SESSION['foto_usuario']) ? $_SESSION['foto_usuario'] : 'pad
             <a href="perfil.php" style="text-decoration:none; color:inherit; display:block;">
                 <img src="../assets/images/users/<?php echo $foto_user; ?>" class="perfil-foto">
                 <h3 class="perfil-nome"><?php echo $_SESSION['nome_usuario']; ?></h3>
-                <span class="perfil-tipo" style="color:#ff6b6b;">ADMINISTRADOR</span>
             </a>
         </div>
         <nav>
@@ -97,8 +98,6 @@ $foto_user = isset($_SESSION['foto_usuario']) ? $_SESSION['foto_usuario'] : 'pad
                 </thead>
                 <tbody>
     <?php while($u = mysqli_fetch_assoc($listaUsuarios)): 
-        
-        // --- LÓGICA DA FOTO (Igual à anterior) ---
         $nomeArquivo = isset($u['foto_perfil']) ? $u['foto_perfil'] : '';
         $caminhoFisico = __DIR__ . "/../assets/images/users/" . $nomeArquivo;
         $caminhoWeb = "../assets/images/users/" . $nomeArquivo;
@@ -109,23 +108,15 @@ $foto_user = isset($_SESSION['foto_usuario']) ? $_SESSION['foto_usuario'] : 'pad
             $fotoFinal = "../assets/images/users/padrao.png";
         }
 
-        // --- LÓGICA DO PERFIL ---
         // Normaliza o nome do perfil para garantir que o CSS funcione
         $perfilDB = isset($u['perfil_usuario']) ? $u['perfil_usuario'] : (isset($u['perfil']) ? $u['perfil'] : 'usuario');
         
         // Define a classe CSS baseada no perfil
-        $badgeClass = 'usuario';
-        $badgeLabel = 'Atleta';
-
-        if ($perfilDB == 'admin') {
-            $badgeClass = 'admin';
-            $badgeLabel = 'Admin';
-        } elseif ($perfilDB == 'instrutor') {
-            $badgeClass = 'instrutor';
-            $badgeLabel = 'Instrutor';
-        } elseif ($perfilDB == 'escrivao') {
-            $badgeClass = 'escrivao';
-            $badgeLabel = 'Escrivão';
+        switch($perfilDB) {
+            case 'admin':     $badgeClass = 'admin';     $badgeLabel = 'Admin'; break;
+            case 'instrutor': $badgeClass = 'instrutor'; $badgeLabel = 'Instrutor'; break;
+            case 'escrivao':  $badgeClass = 'escrivao';  $badgeLabel = 'Escrivão'; break;
+            default:          $badgeClass = 'usuario';   $badgeLabel = 'Atleta'; break;
         }
     ?>
     <tr>

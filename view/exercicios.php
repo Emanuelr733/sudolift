@@ -1,85 +1,51 @@
 <?php
 session_start();
+
 if (!isset($_SESSION['id_usuario']) || $_SESSION['perfil_usuario'] == 'escrivao') {
     header('Location: login.php');
     exit();
 }
+
+// Configurações visuais e de acesso
 $foto = isset($_SESSION['foto_usuario']) ? $_SESSION['foto_usuario'] : 'padrao.png';
 $permissao = (isset($_SESSION['perfil_usuario']) && ($_SESSION['perfil_usuario'] == 'admin' || $_SESSION['perfil_usuario'] == 'instrutor'));
+
 require_once '../model/clsExercicio.php';
 $objExercicio = new clsExercicio();
+
+// Busca a lista completa para exibir na tabela/sidebar
 $todosExercicios = $objExercicio->listar();
+
+// Em vez de percorrer todos os dados com um while, buscamos direto no banco.
 $exercicioSelecionado = null;
+$vetorAtivacao = [];
+
 if (isset($_GET['id_ex'])) {
-    mysqli_data_seek($todosExercicios, 0);
-    while ($ex = mysqli_fetch_assoc($todosExercicios)) {
-        if ($ex['id'] == $_GET['id_ex']) {
-            $exercicioSelecionado = $ex;
-
-            // --- ADICIONE ISSO ---
-            // Busca os músculos na tabela nova para exibir as barrinhas e preencher a edição
-            $vetorAtivacao = [];
-            if (method_exists($objExercicio, 'listarAtivacao')) {
-                $vetorAtivacao = $objExercicio->listarAtivacao($ex['id']);
-            }
-            // ---------------------
-
-            break;
-        }
+    $id_ex = (int)$_GET['id_ex'];
+    
+    // Usa o método eficiente do Model
+    $exercicioSelecionado = $objExercicio->buscarPorId($id_ex);
+    
+    // Se achou o exercício, busca os músculos
+    if ($exercicioSelecionado) {
+        $vetorAtivacao = $objExercicio->listarAtivacao($id_ex);
     }
-    mysqli_data_seek($todosExercicios, 0);
 }
-// Vetor normal (Lista simples de nomes)
-$listaMusculos = [
-    // Peito
-    'Peitoral Superior',
-    'Peitoral Médio',
-    'Peitoral Inferior',
 
-    // Ombros
-    'Deltoide Anterior',
-    'Deltoide Lateral',
-    'Deltoide Posterior',
+$listaMusculos = ['Peitoral Superior', 'Peitoral Médio', 'Peitoral Inferior', 'Deltoide Anterior', 'Deltoide Lateral', 'Deltoide Posterior', 'Dorsais', 'Costas Superiores', 'Trapézio', 'Lombar', 'Bíceps', 'Tríceps', 'Antebraço', 'Abdômen Superior', 'Abdômen Inferior', 'Oblíquos', 'Quadríceps', 'Posterior de Coxa', 'Glúteo', 'Adutores', 'Abdutores', 'Panturrilha'];
 
-    // Costas
-    'Dorsais',
-    'Costas Superiores',
-    'Trapézio',
-    'Lombar',
-
-    // Braços
-    'Bíceps',
-    'Tríceps',
-    'Antebraço',
-
-    // Core
-    'Abdômen Superior',
-    'Abdômen Inferior',
-    'Oblíquos',
-
-    // Pernas
-    'Quadríceps',
-    'Posterior de Coxa',
-    'Glúteo',
-    'Adutores',
-    'Abdutores',
-    'Panturrilha'
-];
-
-// Monta o HTML das opções aqui mesmo no PHP usando foreach
+// Monta o HTML do select de músculos (Performance: faz isso apenas uma vez no server)
 $opcoesSelect = '<option value="">Selecione...</option>';
 foreach ($listaMusculos as $musculo) {
-    // Adiciona cada opção na string gigante
     $opcoesSelect .= '<option value="' . $musculo . '">' . $musculo . '</option>';
 }
-
-// Remove quebras de linha para não quebrar o JavaScript
+// Remove quebras de linha para evitar erro se for usado dentro de JavaScript
 $opcoesSelect = str_replace(["\r", "\n"], '', $opcoesSelect);
+
 $listaEquipamentos = ["Nenhum", "Barra", "Anilha", "Haltere", "Máquina", "Outro"];
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <title>SudoLift - Exercícios</title>
@@ -87,18 +53,14 @@ $listaEquipamentos = ["Nenhum", "Barra", "Anilha", "Haltere", "Máquina", "Outro
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/exercicios.css">
 </head>
-
 <body>
     <div class="sidebar">
         <div class="perfil-area">
             <a href="perfil.php" style="text-decoration:none; color:inherit; display:block;">
-                <?php
-                $caminhoFoto = "../assets/images/users/" . $foto;
-                if (!file_exists($caminhoFoto)) {
-                    $caminhoFoto = "https://via.placeholder.com/80";
-                }
-                ?>
-                <img src="<?php echo $caminhoFoto; ?>" class="perfil-foto">
+                <img src="../assets/images/users/<?php echo $foto; ?>" 
+                     class="perfil-foto" 
+                     onerror="this.src='../assets/images/users/padrao.png'">
+
                 <h3 class="perfil-nome"><?php echo $_SESSION['nome_usuario']; ?></h3>
             </a>
         </div>
@@ -127,39 +89,50 @@ $listaEquipamentos = ["Nenhum", "Barra", "Anilha", "Haltere", "Máquina", "Outro
                 <button class="btn-criar" onclick="abrirModalNovo()">+ Novo Exercício</button>
             <?php endif; ?>
         </div>
+        
         <div class="center-content">
             <?php if ($exercicioSelecionado): ?>
                 <div class="detail-card">
+                    
                     <?php
-                    $img = "../assets/images/exercises/sem_imagem.png";
-                    if (!empty($exercicioSelecionado['imagem']) && file_exists("../assets/images/exercises/" . $exercicioSelecionado['imagem'])) {
-                        $img = "../assets/images/exercises/" . $exercicioSelecionado['imagem'];
-                    }
+                    // Lógica simplificada de Mídia (sem file_exists para não travar o carregamento)
+                    $arquivo = !empty($exercicioSelecionado['imagem']) ? $exercicioSelecionado['imagem'] : '';
+                    $caminho = "../assets/images/exercises/" . $arquivo;
+                    $isVideo = (stripos($arquivo, '.mp4') !== false);
                     ?>
-                    <?php if (strpos($img, '.mp4') !== false): ?>
-                        <video src="<?php echo $img; ?>" class="detail-media" autoplay muted loop playsinline></video>
+
+                    <?php if ($isVideo): ?>
+                        <video src="<?php echo $caminho; ?>" class="detail-media" autoplay muted loop playsinline></video>
                     <?php else: ?>
-                        <img src="<?php echo $img; ?>" class="detail-media">
+                        <img src="<?php echo $caminho; ?>" 
+                             class="detail-media" 
+                             onerror="this.src='../assets/images/exercises/sem_imagem.png'">
                     <?php endif; ?>
-                    <div class="detail-title"><?php echo $exercicioSelecionado['nome']; ?></div>
+
+                    <div class="detail-title"><?php echo htmlspecialchars($exercicioSelecionado['nome']); ?></div>
+                    
                     <div class="tags-container">
-                        <span class="tag equip">Equipamento: <?php echo $exercicioSelecionado['equipamento']; ?></span>
+                        <span class="tag equip">
+                            Equipamento: <?php echo htmlspecialchars($exercicioSelecionado['equipamento']); ?>
+                        </span>
                     </div>
+
                     <div class="info-grid">
                         <div class="info-item">
                             <label>Músculos</label>
                             <span>
                                 <?php
-                                // Exibe os músculos com barras
                                 if (!empty($vetorAtivacao)) {
                                     foreach ($vetorAtivacao as $item) {
+                                        // Cálculo da barra de progresso
+                                        $largura = intval($item['fator'] * 100);
+                                        $nomeMusc = htmlspecialchars($item['musculo']);
+                                        
                                         echo '<div style="margin-bottom:5px;">';
-                                        echo '<strong>' . $item['musculo'] . ': </strong>';
-                                        $larguraBarra = intval($item['fator'] * 100);
+                                        echo "<strong>{$nomeMusc}: </strong>";
                                         echo '<div style="background:#e0e0e0; width:100%; height:10px; border-radius:5px; overflow:hidden;">';
-                                        echo '<div style="background:#76c7c0; width:' . $larguraBarra . '%; height:10px;"></div>';
-                                        echo '</div>';
-                                        echo '</div>';
+                                        echo '<div style="background:#76c7c0; width:' . $largura . '%; height:10px;"></div>';
+                                        echo '</div></div>';
                                     }
                                 } else {
                                     echo 'Nenhum músculo secundário mapeado.';
@@ -172,12 +145,16 @@ $listaEquipamentos = ["Nenhum", "Barra", "Anilha", "Haltere", "Máquina", "Outro
                             <span>#<?php echo $exercicioSelecionado['id']; ?></span>
                         </div>
                     </div>
+
                     <?php if ($permissao): ?>
                         <div class="admin-actions">
                             <button class="btn-action btn-yellow" onclick='editarExercicio(<?php echo json_encode($exercicioSelecionado); ?>, <?php echo json_encode($vetorAtivacao); ?>)'>
                                 <i class="fas fa-edit"></i> Alterar
                             </button>
-                            <a href="../controller/ctrl_Exercicio.php?acao=excluir&id=<?php echo $exercicioSelecionado['id']; ?>" class="btn-action btn-red" onclick="return confirm('Tem certeza que deseja excluir este exercício permanentemente?')">
+                            
+                            <a href="../controller/ctrl_Exercicio.php?acao=excluir&id=<?php echo $exercicioSelecionado['id']; ?>" 
+                               class="btn-action btn-red" 
+                               onclick="return confirm('Tem certeza que deseja excluir este exercício permanentemente?')">
                                 <i class="fas fa-trash"></i> Excluir
                             </a>
                         </div>
@@ -193,59 +170,72 @@ $listaEquipamentos = ["Nenhum", "Barra", "Anilha", "Haltere", "Máquina", "Outro
     </div>
     <div class="right-panel">
         <div class="library-title">BIBLIOTECA</div>
+        
         <div class="library-filters">
             <div class="filter-row">
                 <select id="filtroMusculo" class="lib-select" onchange="filtrarBiblioteca()">
                     <option value="">Todos Músculos</option>
                     <?php foreach ($listaMusculos as $m): ?>
-                        <option value="<?php echo strtolower($m); ?>"><?php echo $m; ?></option>
+                        <option value="<?php echo htmlspecialchars(strtolower($m)); ?>">
+                            <?php echo htmlspecialchars($m); ?>
+                        </option>
                     <?php endforeach; ?>
                 </select>
 
                 <select id="filtroEquip" class="lib-select" onchange="filtrarBiblioteca()">
                     <option value="">Todos Equipamentos</option>
                     <?php foreach ($listaEquipamentos as $e): ?>
-                        <option value="<?php echo $e; ?>"><?php echo $e; ?></option>
+                        <option value="<?php echo htmlspecialchars($e); ?>">
+                            <?php echo htmlspecialchars($e); ?>
+                        </option>
                     <?php endforeach; ?>
                 </select>
             </div>
-            <input type="text" id="buscaExercicio" class="lib-search" placeholder="Buscar exercício..." onkeyup="filtrarBiblioteca()">
+            <input type="search" id="buscaExercicio" class="lib-search" placeholder="Buscar exercício..." onkeyup="filtrarBiblioteca()">
         </div>
 
         <div class="library-list">
             <?php
             if ($todosExercicios && mysqli_num_rows($todosExercicios) > 0) {
+                // Reinicia o ponteiro caso tenha sido usado antes
                 mysqli_data_seek($todosExercicios, 0);
 
                 while ($ex = mysqli_fetch_assoc($todosExercicios)):
-                    $img = "https://via.placeholder.com/50";
-                    if (!empty($ex['imagem']) && file_exists("../assets/images/exercises/" . $ex['imagem'])) {
-                        $img = "../assets/images/exercises/" . $ex['imagem'];
-                    }
+                    // Lógica simplificada de imagem (sem file_exists)
+                    $nomeArquivo = !empty($ex['imagem']) ? $ex['imagem'] : '';
+                    $caminhoImg = "../assets/images/exercises/" . $nomeArquivo;
+                    
+                    // Verifica se é vídeo de forma rápida
+                    $isVideo = (stripos($nomeArquivo, '.mp4') !== false);
+                    
+                    // Classes e Dados para o Filtro JS
                     $classeAtiva = (isset($_GET['id_ex']) && $_GET['id_ex'] == $ex['id']) ? 'active' : '';
-                    // AGORA É SIMPLES: Pega direto da coluna do banco
                     $grupoMuscular = isset($ex['grupo_muscular']) ? strtolower($ex['grupo_muscular']) : '';
             ?>
                     <a href="exercicios.php?id_ex=<?php echo $ex['id']; ?>"
-                        class="lib-item <?php echo $classeAtiva; ?>"
-                        data-nome="<?php echo strtolower($ex['nome']); ?>"
-                        data-equip="<?php echo $ex['equipamento']; ?>"
-                        data-musculo="<?php echo $grupoMuscular; ?>">
-                        <?php if (strpos($img, '.mp4') !== false): ?>
-                            <video src="<?php echo $img; ?>" class="lib-img"></video>
+                       class="lib-item <?php echo $classeAtiva; ?>"
+                       data-nome="<?php echo htmlspecialchars(strtolower($ex['nome'])); ?>"
+                       data-equip="<?php echo htmlspecialchars($ex['equipamento']); ?>"
+                       data-musculo="<?php echo htmlspecialchars($grupoMuscular); ?>">
+                        
+                        <?php if ($isVideo): ?>
+                            <video src="<?php echo $caminhoImg; ?>" class="lib-img"></video>
                         <?php else: ?>
-                            <img src="<?php echo $img; ?>" class="lib-img">
+                            <img src="<?php echo $caminhoImg; ?>" 
+                                 class="lib-img" 
+                                 onerror="this.src='../assets/images/exercises/sem_imagem.png'">
                         <?php endif; ?>
 
                         <div class="lib-info">
-                            <span class="lib-name"><?php echo $ex['nome']; ?></span>
+                            <span class="lib-name"><?php echo htmlspecialchars($ex['nome']); ?></span>
                             <span class="lib-group">
-                                <?php echo $ex['grupo_muscular']; ?> • <?php echo $ex['equipamento']; ?>
+                                <?php echo htmlspecialchars($ex['grupo_muscular']); ?> • <?php echo htmlspecialchars($ex['equipamento']); ?>
                             </span>
                         </div>
                         <i class="fas fa-chevron-right lib-arrow"></i>
                     </a>
-            <?php endwhile;
+            <?php 
+                endwhile;
             } else {
                 echo '<p style="padding:20px; text-align:center; color:#999;">Nenhum exercício cadastrado.</p>';
             }
@@ -258,65 +248,70 @@ $listaEquipamentos = ["Nenhum", "Barra", "Anilha", "Haltere", "Máquina", "Outro
                 <h2 id="tituloModal">Adicionar Exercício</h2>
                 <span class="close-modal" onclick="fecharModal()">&times;</span>
             </div>
+            
             <form action="../controller/ctrl_Exercicio.php" method="POST" enctype="multipart/form-data" id="formExercicio">
                 <input type="hidden" name="acao" id="acao_form" value="inserir">
                 <input type="hidden" name="id" id="id_exercicio" value="">
+
                 <div class="form-group">
                     <label>Mídia (Imagem ou Vídeo MP4)</label>
-                    <input type="file" name="arquivo">
+                    <input type="file" name="arquivo" accept="image/*,video/mp4">
                     <small style="color:#999; font-size:11px;">Deixe vazio para manter a atual na edição.</small>
                 </div>
+
                 <div class="form-group">
                     <label>Nome do Exercício</label>
                     <input type="text" name="nome" id="input_nome" placeholder="Ex: Supino Reto" required>
                 </div>
+
                 <div class="form-group">
                     <label>Equipamento</label>
                     <select name="equipamento" id="input_equipamento">
                         <?php foreach ($listaEquipamentos as $equip): ?>
-                            <option value="<?php echo $equip; ?>"><?php echo $equip; ?></option>
+                            <option value="<?php echo htmlspecialchars($equip); ?>">
+                                <?php echo htmlspecialchars($equip); ?>
+                            </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
+
                 <div class="form-group">
                     <label style="display:flex; justify-content:space-between; align-items:center;">
                         Mapeamento Muscular
-                        <small style="font-weight:normal; color:#888;">(1.0 = Foco Total, 0.5 = Médio, 0.1 = Leve)</small>
+                        <small style="font-weight:normal; color:#888;">(1.0 = Foco Total, 0.5 = Médio)</small>
                     </label>
 
                     <div id="container-musculos" style="margin-bottom: 10px;">
-                    </div>
+                        </div>
+
                     <button type="button" class="btn-small" onclick="adicionarMusculo()"
                         style="background:#e0e0e0; color:#333; padding:5px 10px; border-radius:4px; border:none; cursor:pointer; font-size:12px;">
                         <i class="fas fa-plus"></i> Adicionar Músculo
                     </button>
                 </div>
+
                 <button type="submit" class="btn-submit">Salvar Exercício</button>
             </form>
         </div>
     </div>
-    <script src="../assets/js/exercicios.js"></script>
     <script>
         function adicionarMusculo(musculoVindoDoBanco = '', valorVindoDoBanco = '') {
             var container = document.getElementById('container-musculos');
-
-            // 1. Pega o HTML que o PHP gerou lá em cima.
-            // O PHP "escreve" o texto das options diretamente dentro dessa variável JS.
+            
+            // Pega a lista de opções gerada pelo PHP na Parte 1
             var opcoesHTML = '<?php echo $opcoesSelect; ?>';
-
-            // (Truque simples para marcar o "selected" sem usar JSON)
+            
+            // Se for edição, marca o option correto como selected
             if (musculoVindoDoBanco !== '') {
-                // Procura o texto value="Nome" e substitui por value="Nome" selected
                 var busca = 'value="' + musculoVindoDoBanco + '"';
                 opcoesHTML = opcoesHTML.replace(busca, busca + ' selected');
             }
-
-            // 2. Cria a linha visual
+            
             var row = document.createElement('div');
             row.style.display = 'flex';
             row.style.gap = '10px';
             row.style.marginBottom = '8px';
-
+            
             row.innerHTML = `
                 <select name="musculos_nome[]" style="flex: 2; padding: 8px; border:1px solid #ddd; border-radius:4px;" required>
                     ${opcoesHTML}
@@ -331,18 +326,17 @@ $listaEquipamentos = ["Nenhum", "Barra", "Anilha", "Haltere", "Máquina", "Outro
                     <i class="fas fa-times"></i>
                 </button>
             `;
-
             container.appendChild(row);
         }
-        // Função para abrir modal LIMPO (Novo Cadastro)
+
         function abrirModalNovo() {
             document.getElementById('modalCriar').style.display = 'flex';
             document.getElementById('formExercicio').reset();
             document.getElementById('tituloModal').innerText = 'Adicionar Exercício';
             document.getElementById('acao_form').value = 'inserir';
             document.getElementById('id_exercicio').value = '';
-
-            // Limpa os músculos e adiciona um vazio
+            
+            // Limpa lista de músculos e adiciona um vazio
             document.getElementById('container-musculos').innerHTML = '';
             adicionarMusculo();
         }
@@ -351,56 +345,53 @@ $listaEquipamentos = ["Nenhum", "Barra", "Anilha", "Haltere", "Máquina", "Outro
             document.getElementById('modalCriar').style.display = 'none';
         }
 
-        // Função chamada pelo botão Alterar
         function editarExercicio(dadosGerais, listaMusculos) {
-            // 1. Abre modal e preenche dados básicos
             document.getElementById('modalCriar').style.display = 'flex';
             document.getElementById('tituloModal').innerText = 'Editar Exercício';
             document.getElementById('acao_form').value = 'editar';
             document.getElementById('id_exercicio').value = dadosGerais.id;
+            
             document.getElementById('input_nome').value = dadosGerais.nome;
             document.getElementById('input_equipamento').value = dadosGerais.equipamento;
-
-            // 2. Preenche os músculos
+            
             const container = document.getElementById('container-musculos');
-            container.innerHTML = ''; // Limpa tudo
-
+            container.innerHTML = '';
+            
             if (listaMusculos && listaMusculos.length > 0) {
-                // Para cada músculo que veio do banco, cria uma linha preenchida
                 listaMusculos.forEach(item => {
                     adicionarMusculo(item.musculo, item.fator);
                 });
             } else {
-                adicionarMusculo(); // Se não tiver nada, cria um vazio
+                adicionarMusculo();
+            }
+        }
+
+        // Fecha ao clicar fora
+        window.onclick = function(event) {
+            const modal = document.getElementById('modalCriar');
+            if (event.target == modal) {
+                fecharModal();
             }
         }
 
         function filtrarBiblioteca() {
-            // 1. Pega os valores (convertendo para minúsculo para garantir que encontre)
             var textoBusca = document.getElementById('buscaExercicio').value.toLowerCase();
             var filtroEquip = document.getElementById('filtroEquip').value;
-            var filtroMusculo = document.getElementById('filtroMusculo').value.toLowerCase(); // Agora pega valor único
-
+            var filtroMusculo = document.getElementById('filtroMusculo').value.toLowerCase();
+            
             var items = document.getElementsByClassName('lib-item');
-
+            
             for (var i = 0; i < items.length; i++) {
-                // Pega os dados guardados nos atributos data-*
                 var itemNome = items[i].getAttribute('data-nome');
                 var itemEquip = items[i].getAttribute('data-equip');
-                // Garante que é string, caso venha vazio
                 var itemMusculo = (items[i].getAttribute('data-musculo') || '').toLowerCase();
-
-                // Lógica de filtro
+                
                 var matchTexto = itemNome.indexOf(textoBusca) > -1;
                 var matchEquip = (filtroEquip === "" || itemEquip === filtroEquip);
-
-                // Verifica se o músculo selecionado está contido no exercício
-                // Ex: Se o exercício é "Peitoral" e você filtra "Peitoral", dá match.
                 var matchMusculo = (filtroMusculo === "" || itemMusculo.indexOf(filtroMusculo) > -1);
-
-                // Se passar em TODOS os testes, mostra. Senão, esconde.
+                
                 if (matchTexto && matchEquip && matchMusculo) {
-                    items[i].style.display = "";
+                    items[i].style.display = ""; // Mostra (flex ou block dependendo do CSS)
                 } else {
                     items[i].style.display = "none";
                 }
@@ -408,5 +399,4 @@ $listaEquipamentos = ["Nenhum", "Barra", "Anilha", "Haltere", "Máquina", "Outro
         }
     </script>
 </body>
-
 </html>

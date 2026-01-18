@@ -1,24 +1,28 @@
 <?php
 session_start();
+
 if (!isset($_SESSION['id_usuario'])) {
     header('Location: login.php');
     exit();
 }
 
-require_once '../controller/clsConexao.php'; // Ou onde estiver sua conexão
+require_once '../controller/clsConexao.php';
 
-// 1. Busca os dados atualizados do usuário
-$id_user = $_SESSION['id_usuario'];
+// É importante buscar do banco e não só da sessão, pois o usuário pode ter alterado algo recentemente.
+$id_user = (int)$_SESSION['id_usuario']; // Cast para int por segurança
 $conexao = new clsConexao();
 $sql = "SELECT * FROM usuarios WHERE id = $id_user";
 $res = $conexao->executaSQL($sql);
 $dadosUsuario = mysqli_fetch_assoc($res);
 
-$foto = isset($_SESSION['foto_usuario']) ? $_SESSION['foto_usuario'] : 'padrao.png';
+// Define foto da sessão (sidebar)
+$fotoSessao = isset($_SESSION['foto_usuario']) ? $_SESSION['foto_usuario'] : 'padrao.png';
+
+// Define foto do formulário (pode ser a mesma)
+$fotoForm = !empty($dadosUsuario['foto_perfil']) ? $dadosUsuario['foto_perfil'] : 'padrao.png';
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <title>SudoLift - Meu Perfil</title>
@@ -26,32 +30,29 @@ $foto = isset($_SESSION['foto_usuario']) ? $_SESSION['foto_usuario'] : 'padrao.p
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/perfil.css">
 </head>
-
 <body>
+    
     <div class="sidebar">
         <div class="perfil-area">
             <a href="perfil.php" style="text-decoration:none; color:inherit; display:block;">
-                <?php
-                $caminhoFoto = "../assets/images/users/" . $foto;
-                if (!file_exists($caminhoFoto)) {
-                    $caminhoFoto = "https://via.placeholder.com/80";
-                }
-                ?>
-                <img src="<?php echo $caminhoFoto; ?>" class="perfil-foto">
+                <img src="../assets/images/users/<?php echo $fotoSessao; ?>" 
+                     class="perfil-foto" 
+                     onerror="this.src='../assets/images/users/padrao.png'">
                 <h3 class="perfil-nome"><?php echo $_SESSION['nome_usuario']; ?></h3>
             </a>
         </div>
         <nav>
             <a href="dashboard.php" class="menu-item"><i class="fas fa-home"></i> Início</a>
+            
             <?php if ($_SESSION['perfil_usuario'] != 'escrivao'): ?>
                 <a href="rotinas.php" class="menu-item"><i class="fas fa-dumbbell"></i> Rotinas</a>
                 <a href="exercicios.php" class="menu-item"><i class="fas fa-running"></i> Exercícios</a>
             <?php else: ?>
                 <a href="citacoes.php" class="menu-item"><i class="fas fa-quote-right"></i> Editar Citações</a>
             <?php endif; ?>
+
             <?php if (isset($_SESSION['perfil_usuario']) && $_SESSION['perfil_usuario'] == 'admin'): ?>
                 <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 10px 0;"></div>
-
                 <a href="admin.php" class="menu-item" style="color: #ff6b6b;">
                     <i class="fas fa-user-shield"></i> Painel Admin
                 </a>
@@ -65,12 +66,15 @@ $foto = isset($_SESSION['foto_usuario']) ? $_SESSION['foto_usuario'] : 'padrao.p
             <div class="card-header-bg"></div>
 
             <form action="../controller/ctrl_Usuario.php" method="POST" enctype="multipart/form-data" class="profile-form">
+                
                 <input type="hidden" name="acao" value="editar_perfil">
-                <input type="hidden" name="id_usuario" value="<?php echo $id_user; ?>">
-
+                
                 <div class="photo-upload-section">
                     <div class="photo-wrapper">
-                        <img src="<?php echo $caminhoFoto; ?>" id="preview-foto">
+                        <img src="../assets/images/users/<?php echo $fotoForm; ?>" 
+                             id="preview-foto"
+                             onerror="this.src='../assets/images/users/padrao.png'">
+                        
                         <label for="input-foto" class="btn-edit-photo">
                             <i class="fas fa-camera"></i>
                         </label>
@@ -83,7 +87,7 @@ $foto = isset($_SESSION['foto_usuario']) ? $_SESSION['foto_usuario'] : 'padrao.p
                         <label>Nome Completo</label>
                         <div class="input-wrapper">
                             <i class="fas fa-user"></i>
-                            <input type="text" name="nome" value="<?php echo $dadosUsuario['nome']; ?>" required>
+                            <input type="text" name="nome" value="<?php echo htmlspecialchars($dadosUsuario['nome']); ?>" required>
                         </div>
                     </div>
 
@@ -91,7 +95,7 @@ $foto = isset($_SESSION['foto_usuario']) ? $_SESSION['foto_usuario'] : 'padrao.p
                         <label>E-mail</label>
                         <div class="input-wrapper">
                             <i class="fas fa-envelope"></i>
-                            <input type="email" name="email" value="<?php echo $dadosUsuario['email']; ?>" required>
+                            <input type="email" name="email" value="<?php echo htmlspecialchars($dadosUsuario['email']); ?>" required>
                         </div>
                     </div>
 
@@ -112,7 +116,6 @@ $foto = isset($_SESSION['foto_usuario']) ? $_SESSION['foto_usuario'] : 'padrao.p
     </div>
 
     <script>
-        // Função simples para mostrar a foto assim que o usuário seleciona o arquivo
         function previewImagem(input) {
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
@@ -124,5 +127,4 @@ $foto = isset($_SESSION['foto_usuario']) ? $_SESSION['foto_usuario'] : 'padrao.p
         }
     </script>
 </body>
-
 </html>

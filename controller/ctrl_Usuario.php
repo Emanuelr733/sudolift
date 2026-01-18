@@ -1,46 +1,60 @@
 <?php
 session_start();
-require_once 'clsConexao.php'; // Ajuste o caminho conforme sua estrutura
+require_once 'clsConexao.php';
+if (!isset($_SESSION['id_usuario'])) {
+    header('Location: ../view/login.php');
+    exit();
+}
 
 $conexao = new clsConexao();
 $acao = isset($_POST['acao']) ? $_POST['acao'] : '';
 
 if ($acao == 'editar_perfil') {
-    $id_usuario = $_POST['id_usuario'];
-    $nome = mysqli_real_escape_string($conexao->getConexao(), $_POST['nome']);
+    $id_usuario = $_SESSION['id_usuario'];
+    
+    $nome  = mysqli_real_escape_string($conexao->getConexao(), $_POST['nome']);
     $email = mysqli_real_escape_string($conexao->getConexao(), $_POST['email']);
     $nova_senha = $_POST['senha'];
 
-    // 1. Monta o SQL básico (Nome e Email)
+    // Começa a montar o SQL
     $sql = "UPDATE usuarios SET nome = '$nome', email = '$email'";
 
-    // 2. Se digitou senha, criptografa e adiciona no SQL
+    // Se digitou senha, adiciona ao SQL (com hash)
     if (!empty($nova_senha)) {
-        // Se você usa MD5 (como no login antigo):
-        //$senhaHash = md5($nova_senha);
-        // Se usa password_hash (recomendado):
         $senhaHash = password_hash($nova_senha, PASSWORD_DEFAULT);
-
         $sql .= ", senha = '$senhaHash'";
     }
 
-    // 3. Upload da Foto (se enviou)
+    // Lógica da Foto
     if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] == 0) {
         $extensao = pathinfo($_FILES['foto_perfil']['name'], PATHINFO_EXTENSION);
-        $novoNomeFoto = "user_" . $id_usuario . "_" . time() . "." . $extensao;
-        $destino = "../assets/images/users/" . $novoNomeFoto;
+        $permitidos = ['jpg', 'jpeg', 'png'];
 
-        if (move_uploaded_file($_FILES['foto_perfil']['tmp_name'], $destino)) {
-            $sql .= ", foto_perfil = '$novoNomeFoto'";
+        if (in_array(strtolower($extensao), $permitidos)) {
+            $novoNomeFoto = "user_" . $id_usuario . "_" . time() . "." . $extensao;
+            $destino = "../assets/images/users/" . $novoNomeFoto;
 
-            // Atualiza a sessão IMEDIATAMENTE para a foto mudar na sidebar sem relogar
-            $_SESSION['foto_usuario'] = $novoNomeFoto;
+            // LIMPEZA: Antes de subir a nova, apaga a antiga (se não for a padrão)
+            if (isset($_SESSION['foto_usuario']) && $_SESSION['foto_usuario'] != 'padrao.png') {
+                $caminhoAntigo = "../assets/images/users/" . $_SESSION['foto_usuario'];
+                if (file_exists($caminhoAntigo)) {
+                    unlink($caminhoAntigo);
+                }
+            }
+
+            // Faz o upload
+            if (move_uploaded_file($_FILES['foto_perfil']['tmp_name'], $destino)) {
+                $sql .= ", foto_perfil = '$novoNomeFoto'";
+                
+                // Atualiza a sessão imediatamente para a foto aparecer na sidebar
+                $_SESSION['foto_usuario'] = $novoNomeFoto;
+            }
         }
     }
 
+    // Finaliza o SQL
     $sql .= " WHERE id = $id_usuario";
 
-    // 4. Executa
     if ($conexao->executaSQL($sql)) {
         // Atualiza o nome na sessão também
         $_SESSION['nome_usuario'] = $nome;
@@ -51,8 +65,12 @@ if ($acao == 'editar_perfil') {
               </script>";
     } else {
         echo "<script>
-                alert('Erro ao atualizar perfil.');
+                alert('Erro ao atualizar. O e-mail pode já estar em uso.');
                 window.location.href = '../view/perfil.php';
               </script>";
     }
+} else {
+    // Se tentar acessar direto sem ação
+    header('Location: ../view/perfil.php');
 }
+?>
