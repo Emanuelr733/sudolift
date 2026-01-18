@@ -16,10 +16,10 @@ class clsConexao
     public function getBanco(){return $this->banco;}
     function __construct()
     {
-        $this->host    = 'localhost';
-        $this->usuario = 'root';
-        $this->senha   = '';
-        $this->banco   = 'sudolift';
+        $this->host    = 'srv1596.hstgr.io';
+        $this->usuario = 'u459760425_sudolift';
+        $this->senha   = 'Sudolift123';
+        $this->banco   = 'u459760425_sudolift';
         $this->conecta();
     }
     public function conecta()
