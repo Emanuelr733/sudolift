@@ -33,6 +33,16 @@
                     <input type="password" name="senha" placeholder="Crie uma Senha" required>
                 </div>
 
+                <div class="input-group">
+                    <i class="fas fa-users-cog icon"></i>
+                    <select name="perfil" required>
+                        <option value="atleta" selected>Atleta</option>
+                        <option value="instrutor">Instrutor</option>
+                        <option value="escrivao">Escrivão</option>
+                    </select>
+                    <i class="fas fa-chevron-down arrow-icon"></i>
+                </div>
+
                 <div class="file-group">
                     <label>
                         <i class="fas fa-camera"></i> Foto de Perfil (Opcional)

@@ -153,3 +153,42 @@ body {
 .footer-links a:hover {
     text-decoration: underline;
 }
+
+/* Estilização para o Dropdown (Select) */
+.input-group select {
+    width: 100%;
+    padding: 12px 15px 12px 45px; /* Espaço para o ícone à esquerda */
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    font-size: 1rem;
+    outline: none;
+    cursor: pointer;
+    
+    /* Remove a seta padrão feia do navegador */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    color: #333;
+}
+
+.input-group select:focus {
+    border-color: #2a5298;
+    background-color: #fff;
+}
+
+/* Ajuste se a opção placeholder estiver selecionada (opcional, deixa cinza) */
+.input-group select:invalid {
+    color: #777;
+}
+
+/* Ícone da seta no canto direito (personalizado) */
+.input-group .arrow-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8rem;
+    color: #777;
+    pointer-events: none; /* O clique passa através do ícone para o select */
+}

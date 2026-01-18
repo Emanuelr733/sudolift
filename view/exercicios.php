@@ -2,7 +2,7 @@
 session_start();
 if (!isset($_SESSION['id_usuario'])) { header('Location: login.php'); exit(); }
 $foto = isset($_SESSION['foto_usuario']) ? $_SESSION['foto_usuario'] : 'padrao.png';
-$ehAdmin = (isset($_SESSION['perfil_usuario']) && $_SESSION['perfil_usuario'] == 'admin');
+$permissao = (isset($_SESSION['perfil_usuario']) && ($_SESSION['perfil_usuario'] == 'admin' || $_SESSION['perfil_usuario'] == 'instrutor'));
 require_once '../model/clsExercicio.php';
 $objExercicio = new clsExercicio();
 $todosExercicios = $objExercicio->listar();
@@ -99,13 +99,20 @@ $listaEquipamentos = ["Nenhum", "Barra", "Anilha", "Haltere", "Máquina", "Outro
             <a href="dashboard.php" class="menu-item"><i class="fas fa-home"></i> Início</a>
             <a href="rotinas.php" class="menu-item"><i class="fas fa-dumbbell"></i> Rotinas</a>
             <a href="exercicios.php" class="menu-item ativo"><i class="fas fa-running"></i> Exercícios</a>
+            <?php if(isset($_SESSION['perfil_usuario']) && $_SESSION['perfil_usuario'] == 'admin'): ?>
+                <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 10px 0;"></div>
+                
+                <a href="admin.php" class="menu-item" style="color: #ff6b6b;">
+                    <i class="fas fa-user-shield"></i> Painel Admin
+                </a>
+            <?php endif; ?>
         </nav>
         <a href="../controller/logout.php" class="menu-item sair-btn"><i class="fas fa-sign-out-alt"></i> Sair</a>
     </div>
     <div class="center-panel">
         <div class="center-header">
             <h1>Exercícios</h1>
-            <?php if($ehAdmin): ?>
+            <?php if($permissao): ?>
                 <button class="btn-criar" onclick="abrirModalNovo()">+ Novo Exercício</button>
             <?php endif; ?>
         </div>
@@ -154,7 +161,7 @@ $listaEquipamentos = ["Nenhum", "Barra", "Anilha", "Haltere", "Máquina", "Outro
                             <span>#<?php echo $exercicioSelecionado['id']; ?></span>
                         </div>
                     </div>
-                    <?php if($ehAdmin): ?>
+                    <?php if($permissao): ?>
                         <div class="admin-actions">
                             <button class="btn-action btn-yellow" onclick='editarExercicio(<?php echo json_encode($exercicioSelecionado); ?>, <?php echo json_encode($vetorAtivacao); ?>)'>
                                 <i class="fas fa-edit"></i> Alterar

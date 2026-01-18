@@ -52,6 +52,13 @@ $totalTreinos = mysqli_num_rows($todosTreinosResult);
             <a href="exercicios.php" class="menu-item">
                 <i class="fas fa-running"></i> Exercícios
             </a>
+            <?php if(isset($_SESSION['perfil_usuario']) && $_SESSION['perfil_usuario'] == 'admin'): ?>
+                <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 10px 0;"></div>
+                
+                <a href="admin.php" class="menu-item" style="color: #ff6b6b;">
+                    <i class="fas fa-user-shield"></i> Painel Admin
+                </a>
+            <?php endif; ?>
         </nav>
         <a href="../controller/logout.php" class="menu-item sair-btn">
             <i class="fas fa-sign-out-alt"></i> Sair

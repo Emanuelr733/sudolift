@@ -5,6 +5,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $nome  = $_POST['nome'];
     $email = $_POST['email'];
     $senha = $_POST['senha'];
+    $perfil = $_POST['perfil'] ?? 'atleta';
     $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
     $nome_foto = "padrao.png";
     if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
@@ -20,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $usuario->setEmail($email);
     $usuario->setSenha($senha_hash);
     $usuario->setFotoPerfil($nome_foto);
+    $usuario->setPerfil($perfil);
     if ($usuario->cadastrar()) {
         header('Location: ../view/login.php?msg=cadastrado');
     } else {

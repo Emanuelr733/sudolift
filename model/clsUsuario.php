@@ -24,7 +24,7 @@ class clsUsuario
     {
         $conexao = new clsConexao();
         $sql = "INSERT INTO usuarios (nome, email, senha, perfil, foto_perfil) 
-                VALUES ('$this->nome', '$this->email', '$this->senha', 'atleta', '$this->foto_perfil')";
+                VALUES ('$this->nome', '$this->email', '$this->senha', '$this->perfil', '$this->foto_perfil')";
         return $conexao->executaSQL($sql);
     }
     public function logar()
