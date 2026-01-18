@@ -32,26 +32,27 @@ $totalTreinos = mysqli_num_rows($todosTreinosResult);
 <body>
     <div class="sidebar">
         <div class="perfil-area">
-            <?php
-            $caminhoFoto = "../assets/images/users/" . $foto;
-            if (!file_exists($caminhoFoto)) {
-                $caminhoFoto = "https://via.placeholder.com/80";
-            }
-            ?>
-            <img src="<?php echo $caminhoFoto; ?>" class="perfil-foto">
-            <h3 class="perfil-nome"><?php echo $nome; ?></h3>
-            <span class="perfil-tipo">ATLETA</span>
+            <a href="perfil.php" style="text-decoration:none; color:inherit; display:block;">
+                <?php
+                $caminhoFoto = "../assets/images/users/" . $foto;
+                if (!file_exists($caminhoFoto)) {
+                    $caminhoFoto = "https://via.placeholder.com/80";
+                }
+                ?>
+                <img src="<?php echo $caminhoFoto; ?>" class="perfil-foto">
+                <h3 class="perfil-nome"><?php echo $nome; ?></h3>
+            </a>
         </div>
         <nav>
             <a href="dashboard.php" class="menu-item ativo">
                 <i class="fas fa-home"></i> Início
             </a>
-            <a href="rotinas.php" class="menu-item">
-                <i class="fas fa-dumbbell"></i> Rotinas
-            </a>
-            <a href="exercicios.php" class="menu-item">
-                <i class="fas fa-running"></i> Exercícios
-            </a>
+            <?php if ($_SESSION['perfil_usuario'] != 'escrivao'): ?>
+                <a href="rotinas.php" class="menu-item"><i class="fas fa-dumbbell"></i> Rotinas</a>
+                <a href="exercicios.php" class="menu-item"><i class="fas fa-running"></i> Exercícios</a>
+            <?php else: ?>
+                <a href="citacoes.php" class="menu-item"><i class="fas fa-quote-right"></i> Editar Citações</a>
+            <?php endif; ?>
             <?php if(isset($_SESSION['perfil_usuario']) && $_SESSION['perfil_usuario'] == 'admin'): ?>
                 <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 10px 0;"></div>
                 

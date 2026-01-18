@@ -42,14 +42,21 @@ $foto_user = isset($_SESSION['foto_usuario']) ? $_SESSION['foto_usuario'] : 'pad
             </a>
         </div>
         <nav>
+
             <a href="dashboard.php" class="menu-item"><i class="fas fa-home"></i> Início</a>
-            <a href="rotinas.php" class="menu-item"><i class="fas fa-dumbbell"></i> Rotinas</a>
-            <a href="exercicios.php" class="menu-item"><i class="fas fa-running"></i> Exercícios</a>
-            
-            <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 10px 0;"></div>
-            <a href="admin.php" class="menu-item ativo" style="color: #ff6b6b;">
-                <i class="fas fa-user-shield"></i> Painel Admin
-            </a>
+            <?php if ($_SESSION['perfil_usuario'] != 'escrivao'): ?>
+                <a href="rotinas.php" class="menu-item"><i class="fas fa-dumbbell"></i> Rotinas</a>
+                <a href="exercicios.php" class="menu-item"><i class="fas fa-running"></i> Exercícios</a>
+            <?php else: ?>
+                <a href="citacoes.php" class="menu-item"><i class="fas fa-quote-right"></i> Editar Citações</a>
+            <?php endif; ?>
+            <?php if(isset($_SESSION['perfil_usuario']) && $_SESSION['perfil_usuario'] == 'admin'): ?>
+                <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 10px 0;"></div>
+                
+                <a href="admin.php" class="menu-item" style="color: #ff6b6b;">
+                    <i class="fas fa-user-shield"></i> Painel Admin
+                </a>
+            <?php endif; ?>
         </nav>
         <a href="../controller/logout.php" class="menu-item sair-btn"><i class="fas fa-sign-out-alt"></i> Sair</a>
     </div>

@@ -20,19 +20,19 @@ if ($acao == 'editar_perfil') {
         //$senhaHash = md5($nova_senha);
         // Se usa password_hash (recomendado):
         $senhaHash = password_hash($nova_senha, PASSWORD_DEFAULT);
-        
+
         $sql .= ", senha = '$senhaHash'";
     }
 
     // 3. Upload da Foto (se enviou)
-    if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
-        $extensao = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
+    if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] == 0) {
+        $extensao = pathinfo($_FILES['foto_perfil']['name'], PATHINFO_EXTENSION);
         $novoNomeFoto = "user_" . $id_usuario . "_" . time() . "." . $extensao;
         $destino = "../assets/images/users/" . $novoNomeFoto;
 
-        if (move_uploaded_file($_FILES['foto']['tmp_name'], $destino)) {
-            $sql .= ", foto = '$novoNomeFoto'";
-            
+        if (move_uploaded_file($_FILES['foto_perfil']['tmp_name'], $destino)) {
+            $sql .= ", foto_perfil = '$novoNomeFoto'";
+
             // Atualiza a sessão IMEDIATAMENTE para a foto mudar na sidebar sem relogar
             $_SESSION['foto_usuario'] = $novoNomeFoto;
         }
@@ -44,7 +44,7 @@ if ($acao == 'editar_perfil') {
     if ($conexao->executaSQL($sql)) {
         // Atualiza o nome na sessão também
         $_SESSION['nome_usuario'] = $nome;
-        
+
         echo "<script>
                 alert('Perfil atualizado com sucesso!');
                 window.location.href = '../view/perfil.php';
@@ -56,4 +56,3 @@ if ($acao == 'editar_perfil') {
               </script>";
     }
 }
-?>

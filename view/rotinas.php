@@ -1,6 +1,9 @@
 <?php
 session_start();
-if (!isset($_SESSION['id_usuario'])) { header('Location: login.php'); exit(); }
+if (!isset($_SESSION['id_usuario']) || $_SESSION['perfil_usuario'] == 'escrivao') {
+    header('Location: login.php');
+    exit();
+}
 
 require_once '../model/clsTreino.php';
 require_once '../model/clsItemTreino.php';
@@ -13,6 +16,7 @@ $listaRotinas = $objTreino->listarMeusTreinos($id_usuario);
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <title>SudoLift - Minhas Rotinas</title>
@@ -20,13 +24,16 @@ $listaRotinas = $objTreino->listarMeusTreinos($id_usuario);
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/rotinas.css">
 </head>
+
 <body>
     <div class="sidebar">
         <div class="perfil-area">
             <a href="perfil.php" style="text-decoration:none; color:inherit; display:block;">
-                <?php 
+                <?php
                 $caminhoFoto = "../assets/images/users/" . $foto;
-                if (!file_exists($caminhoFoto)) { $caminhoFoto = "https://via.placeholder.com/80"; }
+                if (!file_exists($caminhoFoto)) {
+                    $caminhoFoto = "https://via.placeholder.com/80";
+                }
                 ?>
                 <img src="<?php echo $caminhoFoto; ?>" class="perfil-foto">
                 <h3 class="perfil-nome"><?php echo $_SESSION['nome_usuario']; ?></h3>
@@ -36,12 +43,12 @@ $listaRotinas = $objTreino->listarMeusTreinos($id_usuario);
             <a href="dashboard.php" class="menu-item">
                 <i class="fas fa-home"></i> Início
             </a>
-            <a href="rotinas.php" class="menu-item ativo">
-                <i class="fas fa-dumbbell"></i> Rotinas
-            </a>
-            <a href="exercicios.php" class="menu-item">
-                <i class="fas fa-running"></i> Exercícios
-            </a>
+            <?php if ($_SESSION['perfil_usuario'] != 'escrivao'): ?>
+                <a href="rotinas.php" class="menu-item ativo"><i class="fas fa-dumbbell"></i> Rotinas</a>
+                <a href="exercicios.php" class="menu-item"><i class="fas fa-running"></i> Exercícios</a>
+            <?php else: ?>
+                <a href="citacoes.php" class="menu-item"><i class="fas fa-quote-right"></i> Editar Citações</a>
+            <?php endif; ?>
             <?php if(isset($_SESSION['perfil_usuario']) && $_SESSION['perfil_usuario'] == 'admin'): ?>
                 <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 10px 0;"></div>
                 
@@ -59,7 +66,7 @@ $listaRotinas = $objTreino->listarMeusTreinos($id_usuario);
                 <h1>Minhas Rotinas</h1>
                 <p style="color:#666; font-size:14px; margin-top:5px;">Gerencie seus treinos e acompanhe seu progresso.</p>
             </div>
-            
+
             <form action="../controller/ctrl_Treino.php" method="POST" style="margin:0;">
                 <input type="hidden" name="acao" value="novo">
                 <input type="hidden" name="nome_treino" value="Nova Rotina">
@@ -75,23 +82,23 @@ $listaRotinas = $objTreino->listarMeusTreinos($id_usuario);
                 while ($rotina = mysqli_fetch_assoc($listaRotinas)) {
                     $objItem = new clsItemTreino();
                     $itens = $objItem->listarDoTreino($rotina['id']);
-                    
+
                     // Lógica para Resumo e Tags de Músculos
-                    $count = 0; 
+                    $count = 0;
                     $musculosEncontrados = [];
-                    
-                    while($ex = mysqli_fetch_assoc($itens)) {
+
+                    while ($ex = mysqli_fetch_assoc($itens)) {
                         $count++;
                         // Coleta os grupos musculares (se existirem e não forem vazios)
                         if (!empty($ex['grupo_muscular'])) {
                             $musculosEncontrados[] = $ex['grupo_muscular'];
                         }
                     }
-                    
+
                     // Remove duplicados e pega os 2 primeiros para mostrar na tag
                     $musculosUnicos = array_unique($musculosEncontrados);
-                    $tagsMusculos = array_slice($musculosUnicos, 0, 3); 
-                    
+                    $tagsMusculos = array_slice($musculosUnicos, 0, 3);
+
                     // Define ícone baseado no nome (frescura visual legal)
                     $iconeTreino = "fa-dumbbell";
                     $nomeLower = strtolower($rotina['nome_treino']);
@@ -99,12 +106,12 @@ $listaRotinas = $objTreino->listarMeusTreinos($id_usuario);
                     if (strpos($nomeLower, 'costa') !== false) $iconeTreino = "fa-child";
                     if (strpos($nomeLower, 'cardio') !== false) $iconeTreino = "fa-heartbeat";
 
-                    ?>
+            ?>
                     <div class="card-rotina">
                         <div class="card-header-visual">
                             <i class="fas <?php echo $iconeTreino; ?>"></i>
                         </div>
-                        
+
                         <div class="card-body">
                             <div class="rotina-top">
                                 <div class="rotina-titulo"><?php echo $rotina['nome_treino']; ?></div>
@@ -127,8 +134,8 @@ $listaRotinas = $objTreino->listarMeusTreinos($id_usuario);
                             </div>
 
                             <div class="tags-area">
-                                <?php if(count($tagsMusculos) > 0): ?>
-                                    <?php foreach($tagsMusculos as $musculo): ?>
+                                <?php if (count($tagsMusculos) > 0): ?>
+                                    <?php foreach ($tagsMusculos as $musculo): ?>
                                         <span class="mini-tag"><?php echo $musculo; ?></span>
                                     <?php endforeach; ?>
                                 <?php else: ?>
@@ -141,7 +148,7 @@ $listaRotinas = $objTreino->listarMeusTreinos($id_usuario);
                             </a>
                         </div>
                     </div>
-                    <?php
+                <?php
                 }
             } else {
                 ?>
@@ -150,7 +157,7 @@ $listaRotinas = $objTreino->listarMeusTreinos($id_usuario);
                     <h3>Você ainda não tem rotinas.</h3>
                     <p>Crie sua primeira rotina de treino para começar a acompanhar sua evolução.</p>
                 </div>
-                <?php
+            <?php
             }
             ?>
         </div>
@@ -168,7 +175,7 @@ $listaRotinas = $objTreino->listarMeusTreinos($id_usuario);
             menu.classList.toggle("show");
             event.stopPropagation();
         }
-        
+
         window.onclick = function(event) {
             if (!event.target.matches('.menu-dots')) {
                 var dropdowns = document.getElementsByClassName("dropdown-content");
@@ -182,4 +189,5 @@ $listaRotinas = $objTreino->listarMeusTreinos($id_usuario);
         }
     </script>
 </body>
+
 </html>

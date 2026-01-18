@@ -1,6 +1,9 @@
 <?php
 session_start();
-if (!isset($_SESSION['id_usuario'])) { header('Location: login.php'); exit(); }
+if (!isset($_SESSION['id_usuario'])) {
+    header('Location: login.php');
+    exit();
+}
 
 require_once '../controller/clsConexao.php'; // Ou onde estiver sua conexão
 
@@ -15,6 +18,7 @@ $foto = isset($_SESSION['foto_usuario']) ? $_SESSION['foto_usuario'] : 'padrao.p
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <title>SudoLift - Meu Perfil</title>
@@ -22,13 +26,16 @@ $foto = isset($_SESSION['foto_usuario']) ? $_SESSION['foto_usuario'] : 'padrao.p
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/perfil.css">
 </head>
+
 <body>
     <div class="sidebar">
         <div class="perfil-area">
             <a href="perfil.php" style="text-decoration:none; color:inherit; display:block;">
-                <?php 
+                <?php
                 $caminhoFoto = "../assets/images/users/" . $foto;
-                if (!file_exists($caminhoFoto)) { $caminhoFoto = "https://via.placeholder.com/80"; }
+                if (!file_exists($caminhoFoto)) {
+                    $caminhoFoto = "https://via.placeholder.com/80";
+                }
                 ?>
                 <img src="<?php echo $caminhoFoto; ?>" class="perfil-foto">
                 <h3 class="perfil-nome"><?php echo $_SESSION['nome_usuario']; ?></h3>
@@ -36,8 +43,19 @@ $foto = isset($_SESSION['foto_usuario']) ? $_SESSION['foto_usuario'] : 'padrao.p
         </div>
         <nav>
             <a href="dashboard.php" class="menu-item"><i class="fas fa-home"></i> Início</a>
-            <a href="rotinas.php" class="menu-item"><i class="fas fa-dumbbell"></i> Rotinas</a>
-            <a href="exercicios.php" class="menu-item"><i class="fas fa-running"></i> Exercícios</a>
+            <?php if ($_SESSION['perfil_usuario'] != 'escrivao'): ?>
+                <a href="rotinas.php" class="menu-item"><i class="fas fa-dumbbell"></i> Rotinas</a>
+                <a href="exercicios.php" class="menu-item"><i class="fas fa-running"></i> Exercícios</a>
+            <?php else: ?>
+                <a href="citacoes.php" class="menu-item"><i class="fas fa-quote-right"></i> Editar Citações</a>
+            <?php endif; ?>
+            <?php if (isset($_SESSION['perfil_usuario']) && $_SESSION['perfil_usuario'] == 'admin'): ?>
+                <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 10px 0;"></div>
+
+                <a href="admin.php" class="menu-item" style="color: #ff6b6b;">
+                    <i class="fas fa-user-shield"></i> Painel Admin
+                </a>
+            <?php endif; ?>
         </nav>
         <a href="../controller/logout.php" class="menu-item sair-btn"><i class="fas fa-sign-out-alt"></i> Sair</a>
     </div>
@@ -45,11 +63,11 @@ $foto = isset($_SESSION['foto_usuario']) ? $_SESSION['foto_usuario'] : 'padrao.p
     <div class="main-content">
         <div class="profile-card">
             <div class="card-header-bg"></div>
-            
+
             <form action="../controller/ctrl_Usuario.php" method="POST" enctype="multipart/form-data" class="profile-form">
                 <input type="hidden" name="acao" value="editar_perfil">
                 <input type="hidden" name="id_usuario" value="<?php echo $id_user; ?>">
-                
+
                 <div class="photo-upload-section">
                     <div class="photo-wrapper">
                         <img src="<?php echo $caminhoFoto; ?>" id="preview-foto">
@@ -57,7 +75,7 @@ $foto = isset($_SESSION['foto_usuario']) ? $_SESSION['foto_usuario'] : 'padrao.p
                             <i class="fas fa-camera"></i>
                         </label>
                     </div>
-                    <input type="file" name="foto" id="input-foto" accept="image/*" onchange="previewImagem(this)">
+                    <input type="file" name="foto_perfil" id="input-foto" accept="image/*" onchange="previewImagem(this)">
                 </div>
 
                 <div class="input-grid">
@@ -106,4 +124,5 @@ $foto = isset($_SESSION['foto_usuario']) ? $_SESSION['foto_usuario'] : 'padrao.p
         }
     </script>
 </body>
+
 </html>

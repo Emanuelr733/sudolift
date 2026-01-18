@@ -1,0 +1,49 @@
+<?php
+require_once '../controller/clsConexao.php';
+
+class clsCitacao
+{
+    private $conexao;
+
+    public function __construct()
+    {
+        $this->conexao = new clsConexao();
+    }
+
+    public function inserir($descricao, $autor)
+    {
+        $descricao = mysqli_real_escape_string($this->conexao->getConexao(), $descricao);
+        $autor = mysqli_real_escape_string($this->conexao->getConexao(), $autor);
+
+        $sql = "INSERT INTO citacoes (descricao, autor) VALUES ('$descricao', '$autor')";
+        return $this->conexao->executaSQL($sql);
+    }
+
+    public function atualizar($id, $descricao, $autor)
+    {
+        $descricao = mysqli_real_escape_string($this->conexao->getConexao(), $descricao);
+        $autor = mysqli_real_escape_string($this->conexao->getConexao(), $autor);
+
+        $sql = "UPDATE citacoes SET descricao = '$descricao', autor = '$autor' WHERE id = $id";
+        return $this->conexao->executaSQL($sql);
+    }
+
+    public function excluir($id)
+    {
+        $sql = "DELETE FROM citacoes WHERE id = $id";
+        return $this->conexao->executaSQL($sql);
+    }
+
+    public function listar()
+    {
+        $sql = "SELECT * FROM citacoes ORDER BY id DESC";
+        return $this->conexao->executaSQL($sql);
+    }
+
+    public function buscarPorId($id)
+    {
+        $sql = "SELECT * FROM citacoes WHERE id = $id";
+        $res = $this->conexao->executaSQL($sql);
+        return mysqli_fetch_assoc($res);
+    }
+}
