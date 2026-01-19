@@ -9,7 +9,7 @@ if (!isset($_SESSION['id_usuario'])) {
 require_once '../controller/clsConexao.php';
 
 // É importante buscar do banco e não só da sessão, pois o usuário pode ter alterado algo recentemente.
-$id_user = (int)$_SESSION['id_usuario']; // Cast para int por segurança
+$id_user = (int)$_SESSION['id_usuario'];
 $conexao = new clsConexao();
 $sql = "SELECT * FROM usuarios WHERE id = $id_user";
 $res = $conexao->executaSQL($sql);

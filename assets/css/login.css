@@ -1,141 +1,18 @@
-/* Reset básico */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-body {
-    background-color: #f0f2f5;
-    /* Gradiente tema do SudoLift */
-    background-image: linear-gradient(135deg, #76c7c0 0%, #4db6ac 100%);
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.main-wrapper {
-    width: 100%;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-}
-
-.box-container {
-    background: white;
-    width: 100%;
-    max-width: 400px;
-    padding: 40px;
-    border-radius: 15px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    text-align: center;
-}
-
-/* Marca / Logo */
-.brand {
-    color: #333;
-    margin-bottom: 10px;
-}
-
-.brand i {
-    font-size: 40px;
-    color: #76c7c0;
-    margin-bottom: 10px;
-}
-
-.subtitle {
-    color: #666;
-    margin-bottom: 25px;
-    font-size: 14px;
-}
-
-/* Inputs com Ícones */
-.input-group {
-    position: relative;
-    margin-bottom: 15px;
-}
-
-.input-group .icon {
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #aaa;
-    font-size: 14px;
-}
-
-.input-group input {
-    width: 100%;
-    padding: 12px 15px 12px 40px; /* Espaço para o ícone */
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 14px;
-    outline: none;
-    transition: border 0.3s;
-}
-
-.input-group input:focus {
-    border-color: #76c7c0;
-    box-shadow: 0 0 0 3px rgba(118, 199, 192, 0.1);
-}
-
-.input-group input:focus + .icon {
-    color: #76c7c0;
-}
-
-/* Botão de Login */
-.btn-login {
-    width: 100%;
-    padding: 12px;
-    background-color: #333; /* Cinza escuro para Login */
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s;
-    margin-top: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
-
-.btn-login:hover {
-    background-color: #555;
-}
-
-/* Mensagem de Erro */
-.erro-msg {
-    background-color: #ffebee;
-    color: #c62828;
-    padding: 10px;
-    border-radius: 8px;
-    font-size: 13px;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    border: 1px solid #ffcdd2;
-}
-
-/* Links do Rodapé */
-.footer-links {
-    margin-top: 25px;
-    font-size: 13px;
-    color: #666;
-}
-
-.footer-links a {
-    color: #76c7c0;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.footer-links a:hover {
-    text-decoration: underline;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+body { background-color: #f0f2f5; background-image: linear-gradient(135deg, #76c7c0 0%, #4db6ac 100%); height: 100vh; display: flex; justify-content: center; align-items: center; }
+.main-wrapper { width: 100%; padding: 20px; display: flex; justify-content: center; }
+.box-container { background: white; width: 100%; max-width: 400px; padding: 40px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; }
+.brand { color: #333; margin-bottom: 10px; }
+.brand i { font-size: 40px; color: #76c7c0; margin-bottom: 10px; }
+.subtitle { color: #666; margin-bottom: 25px; font-size: 14px; }
+.input-group { position: relative; margin-bottom: 15px; }
+.input-group .icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #aaa; font-size: 14px; }
+.input-group input { width: 100%; padding: 12px 15px 12px 40px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; transition: border 0.3s; }
+.input-group input:focus { border-color: #76c7c0; box-shadow: 0 0 0 3px rgba(118, 199, 192, 0.1); }
+.input-group input:focus + .icon { color: #76c7c0; }
+.btn-login { width: 100%; padding: 12px; background-color: #333; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.3s; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+.btn-login:hover { background-color: #555; }
+.erro-msg { background-color: #ffebee; color: #c62828; padding: 10px; border-radius: 8px; font-size: 13px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid #ffcdd2; }
+.footer-links { margin-top: 25px; font-size: 13px; color: #666; }
+.footer-links a { color: #76c7c0; text-decoration: none; font-weight: bold; }
+.footer-links a:hover { text-decoration: underline; }

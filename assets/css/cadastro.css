@@ -1,194 +1,25 @@
-/* Reset básico */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-body {
-    background-color: #f0f2f5;
-    /* Mesmo gradiente do login para manter identidade */
-    background-image: linear-gradient(135deg, #76c7c0 0%, #4db6ac 100%);
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.main-wrapper {
-    width: 100%;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-}
-
-.box-container {
-    background: white;
-    width: 100%;
-    max-width: 400px;
-    padding: 40px;
-    border-radius: 15px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    text-align: center;
-}
-
-/* Cabeçalho (Ícone e Título) */
-.brand {
-    color: #333;
-    margin-bottom: 10px;
-}
-
-.brand i {
-    font-size: 40px;
-    color: #76c7c0;
-    margin-bottom: 10px;
-}
-
-.subtitle {
-    color: #666;
-    margin-bottom: 25px;
-    font-size: 14px;
-}
-
-/* Inputs com Ícones */
-.input-group {
-    position: relative;
-    margin-bottom: 15px;
-}
-
-.input-group .icon {
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #aaa;
-    font-size: 14px;
-}
-
-.input-group input {
-    width: 100%;
-    padding: 12px 15px 12px 40px; /* Espaço para o ícone */
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 14px;
-    outline: none;
-    transition: border 0.3s;
-}
-
-.input-group input:focus {
-    border-color: #76c7c0;
-    box-shadow: 0 0 0 3px rgba(118, 199, 192, 0.1);
-}
-
-.input-group input:focus + .icon {
-    color: #76c7c0;
-}
-
-/* Área da Foto de Perfil (Exclusivo do Cadastro) */
-.file-group {
-    text-align: left;
-    margin-bottom: 20px;
-    background: #f9f9f9;
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px dashed #ccc;
-}
-
-.file-group label {
-    display: block;
-    font-size: 13px;
-    color: #555;
-    margin-bottom: 8px;
-    font-weight: 600;
-}
-
-.file-group label i {
-    color: #76c7c0;
-    margin-right: 5px;
-}
-
-.input-file {
-    font-size: 12px;
-    width: 100%;
-    color: #666;
-}
-
-/* Botão de Cadastrar */
-.btn-register {
-    width: 100%;
-    padding: 12px;
-    background-color: #28a745; /* Verde para cadastro */
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s;
-    margin-top: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
-
-.btn-register:hover {
-    background-color: #218838;
-}
-
-/* Links do Rodapé */
-.footer-links {
-    margin-top: 25px;
-    font-size: 13px;
-    color: #666;
-}
-
-.footer-links a {
-    color: #76c7c0;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.footer-links a:hover {
-    text-decoration: underline;
-}
-
-/* Estilização para o Dropdown (Select) */
-.input-group select {
-    width: 100%;
-    padding: 12px 15px 12px 45px; /* Espaço para o ícone à esquerda */
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-    font-size: 1rem;
-    outline: none;
-    cursor: pointer;
-    
-    /* Remove a seta padrão feia do navegador */
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    color: #333;
-}
-
-.input-group select:focus {
-    border-color: #2a5298;
-    background-color: #fff;
-}
-
-/* Ajuste se a opção placeholder estiver selecionada (opcional, deixa cinza) */
-.input-group select:invalid {
-    color: #777;
-}
-
-/* Ícone da seta no canto direito (personalizado) */
-.input-group .arrow-icon {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 0.8rem;
-    color: #777;
-    pointer-events: none; /* O clique passa através do ícone para o select */
-}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+body { background-color: #f0f2f5; background-image: linear-gradient(135deg, #76c7c0 0%, #4db6ac 100%); height: 100vh; display: flex; justify-content: center; align-items: center; }
+.main-wrapper { width: 100%; padding: 20px; display: flex; justify-content: center; }
+.box-container { background: white; width: 100%; max-width: 400px; padding: 40px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; }
+.brand { color: #333; margin-bottom: 10px; }
+.brand i { font-size: 40px; color: #76c7c0; margin-bottom: 10px; }
+.subtitle { color: #666; margin-bottom: 25px; font-size: 14px; }
+.input-group { position: relative; margin-bottom: 15px; }
+.input-group .icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #aaa; font-size: 14px; }
+.input-group input { width: 100%; padding: 12px 15px 12px 40px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; transition: border 0.3s; }
+.input-group input:focus { border-color: #76c7c0; box-shadow: 0 0 0 3px rgba(118, 199, 192, 0.1); }
+.input-group input:focus + .icon { color: #76c7c0; }
+.file-group { text-align: left; margin-bottom: 20px; background: #f9f9f9; padding: 12px; border-radius: 8px; border: 1px dashed #ccc; }
+.file-group label { display: block; font-size: 13px; color: #555; margin-bottom: 8px; font-weight: 600; }
+.file-group label i { color: #76c7c0; margin-right: 5px; }
+.input-file { font-size: 12px; width: 100%; color: #666; }
+.btn-register { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.3s; margin-top: 5px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+.btn-register:hover { background-color: #218838; }
+.footer-links { margin-top: 25px; font-size: 13px; color: #666; }
+.footer-links a { color: #76c7c0; text-decoration: none; font-weight: bold; }
+.footer-links a:hover { text-decoration: underline; }
+.input-group select { width: 100%; padding: 12px 15px 12px 45px; border: 1px solid #ddd; border-radius: 5px; background-color: #f9f9f9; font-size: 1rem; outline: none; cursor: pointer; -webkit-appearance: none; -moz-appearance: none; appearance: none; color: #333; }
+.input-group select:focus { border-color: #2a5298; background-color: #fff; }
+.input-group select:invalid { color: #777; }
+.input-group .arrow-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 0.8rem; color: #777; pointer-events: none; }
