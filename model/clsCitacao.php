@@ -53,5 +53,19 @@ class clsCitacao
         $res = $this->conexao->executaSQL($sql);
         return mysqli_fetch_assoc($res);
     }
+
+    public function listarPaginado($inicio, $limite)
+    {
+        $sql = "SELECT * FROM citacoes ORDER BY id DESC LIMIT $inicio, $limite";
+        return $this->conexao->executaSQL($sql);
+    }
+
+    public function contarTotal()
+    {
+        $sql = "SELECT COUNT(*) as total FROM citacoes";
+        $res = $this->conexao->executaSQL($sql);
+        $row = mysqli_fetch_assoc($res);
+        return $row['total'];
+    }
 }
 ?>

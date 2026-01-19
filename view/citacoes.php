@@ -16,7 +16,16 @@ $foto = isset($_SESSION['foto_usuario']) ? $_SESSION['foto_usuario'] : 'padrao.p
 
 require_once '../model/clsCitacao.php';
 $objCitacao = new clsCitacao();
-$todasCitacoes = $objCitacao->listar();
+
+// Paginação
+$itensPorPagina = 5;
+$pagina = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+if ($pagina < 1) $pagina = 1;
+$inicio = ($pagina - 1) * $itensPorPagina;
+
+$todasCitacoes = $objCitacao->listarPaginado($inicio, $itensPorPagina);
+$totalCitacoes = $objCitacao->contarTotal();
+$totalPaginas = ceil($totalCitacoes / $itensPorPagina);
 
 // Lógica de Edição (se id_edit for passado)
 $editando = false;
@@ -42,102 +51,7 @@ if (isset($_GET['id_edit'])) {
     <title>SudoLift - Citações</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/style.css">
-
-    <!-- CSS Inline para simplificar, seguindo estilo dos outros -->
-    <style>
-        .form-container {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            margin-bottom: 30px;
-        }
-
-        .form-row {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .form-group {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group label {
-            font-size: 14px;
-            color: #6b7280;
-            margin-bottom: 5px;
-            font-weight: 500;
-        }
-
-        .form-control {
-            padding: 10px;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            font-family: inherit;
-        }
-
-        .btn-salvar {
-            background: #4f46e5;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .btn-salvar:hover {
-            background: #4338ca;
-        }
-
-        .table-container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            overflow: hidden;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th,
-        td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #f3f4f6;
-        }
-
-        th {
-            background: #f9fafb;
-            font-weight: 600;
-            color: #374151;
-        }
-
-        .actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-icon {
-            border: none;
-            background: none;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .btn-edit {
-            color: #f59e0b;
-        }
-
-        .btn-delete {
-            color: #ef4444;
-        }
-    </style>
+    <link rel="stylesheet" href="../assets/css/citacoes.css">
 </head>
 
 <body>
@@ -213,7 +127,7 @@ if (isset($_GET['id_edit'])) {
                             <td><?php echo $c['descricao']; ?></td>
                             <td><?php echo $c['autor']; ?></td>
                             <td class="actions">
-                                <a href="citacoes.php?id_edit=<?php echo $c['id']; ?>" class="btn-icon btn-edit"><i class="fas fa-edit"></i></a>
+                                <a href="citacoes.php?id_edit=<?php echo $c['id']; ?>&pagina=<?php echo $pagina; ?>" class="btn-icon btn-edit"><i class="fas fa-edit"></i></a>
                                 <a href="../controller/ctrl_Citacao.php?acao=excluir&id=<?php echo $c['id']; ?>" class="btn-icon btn-delete" onclick="return confirm('Tem certeza?');"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
@@ -221,6 +135,26 @@ if (isset($_GET['id_edit'])) {
                 </tbody>
             </table>
         </div>
+
+        <!-- Paginação -->
+        <?php if ($totalPaginas > 1): ?>
+            <div class="pagination">
+                <?php if ($pagina > 1): ?>
+                    <a href="?pagina=<?php echo $pagina - 1; ?>" class="page-link">&laquo; Anterior</a>
+                <?php endif; ?>
+
+                <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
+                    <a href="?pagina=<?php echo $i; ?>" class="page-link <?php echo ($i == $pagina) ? 'active' : ''; ?>">
+                        <?php echo $i; ?>
+                    </a>
+                <?php endfor; ?>
+
+                <?php if ($pagina < $totalPaginas): ?>
+                    <a href="?pagina=<?php echo $pagina + 1; ?>" class="page-link">Próxima &raquo;</a>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+
     </div>
 </body>
 
